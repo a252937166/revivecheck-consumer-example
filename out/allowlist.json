@@ -1,0 +1,98 @@
+{
+  "schema": "revivecheck-consumer.allowlist.v1",
+  "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
+  "source": "live:portaldot-v3-testnet",
+  "generatedAt": "2026-10-25T09:59:21.688Z",
+  "network": {
+    "key": "testnet",
+    "chainId": 420420777,
+    "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd"
+  },
+  "allow": [
+    {
+      "chainId": 420420777,
+      "address": "0x00001e6100000000000000000000000000010000",
+      "symbol": "pUSD",
+      "name": "Portaldot USD (test)",
+      "decimals": 6,
+      "assetId": "7777",
+      "source": "approved-report",
+      "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+      "reportCheckpoint": {
+        "number": "187136",
+        "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+        "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+      },
+      "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+      "revision": "2",
+      "trustedReviewers": [
+        "0x95db300103ec8b45884b13ed85230fbf02114065"
+      ],
+      "identity": "3bbb9cc2ff10f7ea08b51556ceab5fd87b923191682c1c3758a5aaace105138c"
+    }
+  ],
+  "denied": [],
+  "evaluatedAt": "2026-10-25T09:59:21.688Z",
+  "checkpoints": {
+    "registry": {
+      "number": "187437",
+      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
+      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+    },
+    "observation": {
+      "number": "187437",
+      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
+      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3"
+    },
+    "listing": {
+      "number": "187437",
+      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
+      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+    },
+    "storage": {
+      "blockNumber": "187145",
+      "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868",
+      "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+      "extrinsicIndex": 1
+    },
+    "report": {
+      "number": "187136",
+      "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+      "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+    }
+  },
+  "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+  "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+  "evaluationHash": "c799567e1c76991101fd586f3f71372c1159fc15bd1678809c22858bd7bc749b",
+  "evaluationStatus": "valid",
+  "binding": {
+    "id": "f3736a5e-6884-4460-b70f-7499e37aa024",
+    "bindingHash": "eb2dcbd86e16c4ddbdaf0710958edd91628d7607aa4879f5d78f6cb343aa0b9e",
+    "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+    "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+    "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+    "revision": "2",
+    "storage": {
+      "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+      "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
+    },
+    "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
+    "boundAt": "2026-10-25T09:59:13.007Z"
+  },
+  "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
+  "roles": {
+    "owner": {
+      "address": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+      "control": "the ReviveCheck project's development test account; it owns the pusd-catalog-v2 release and signed the listing"
+    },
+    "reviewer": {
+      "address": "0x95db300103ec8b45884b13ed85230fbf02114065",
+      "control": "the ReviveCheck project's separate reviewer test account; a distinct signer controlled by the same project, so this shows role separation, not independent review"
+    },
+    "operator": {
+      "control": "this repository's check command, run by an AI agent on the author's machine; it reads the chain and signs nothing"
+    }
+  },
+  "rule": "An entry is allowed only when its binding evaluates to valid under this policy and the published fields equal the approved report field by field. A valid evaluation with a differing configured entry withholds the entry and names the field. The published fields come from the approved report, not from this configuration.",
+  "caveat": "An allowed entry means the policy held at the recorded checkpoints and time; evaluate again before each use. The roles above say who controls each account. This allow-list establishes neither independent review nor adoption: both the release owner and the trusted reviewer are controlled by the ReviveCheck project."
+}
