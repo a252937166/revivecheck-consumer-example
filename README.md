@@ -31,7 +31,7 @@ Everything is read-only. No key is held, nothing is signed, no transaction is se
 git clone <this repository> revivecheck-consumer-example
 cd revivecheck-consumer-example
 node -v                                   # v22 or later
-shasum -a 256 -c vendor/CHECKSUMS.txt     # Linux: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
+(cd vendor && shasum -a 256 -c CHECKSUMS.txt)     # Linux: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
 npm ci                                    # installs revivecheck from vendor/revivecheck-0.3.0.tgz
 npm test                                  # offline refusal cases
 ```
@@ -41,9 +41,9 @@ The package artifact:
 | | |
 | --- | --- |
 | File | `vendor/revivecheck-0.3.0.tgz` |
-| SHA-256 | `e93c32da088e653f4d30708f523994e53f4fae85eb4f95f15e843493d75c9177` |
-| Size | 97,699 bytes packed, 338,308 bytes unpacked, 38 files |
-| Produced | 2026-10-25T09:51:24Z with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout (branch `redesign/custody-record`, HEAD `4dfb1e3` **with uncommitted working-tree changes**, see the caveat below) |
+| SHA-256 | `472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c` |
+| Size | 99,536 bytes packed, 344,003 bytes unpacked, 38 files |
+| Produced | 2026-10-25T10:34:11Z with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout at commit `8aee632f9eff67211e482605527a043d89aa6b8a` (branch `redesign/custody-record`, clean working tree). An earlier artifact packed at 09:51Z from an uncommitted tree (SHA-256 `e93c32da…9177`) was used for the first install and the live check; its `lib/` is identical, see `ONBOARDING_LOG.md` |
 | Contents | `lib/`, `contracts/*.sol`, `contracts/deployed/v1/`, `mcp/`, `scripts/revivecheck.js`, `docs/API.md`, `docs/POLICY.md`, `docs/INTEGRATION.md`, `README.md`, `LICENSE`, `package.json` |
 
 `"private": true` in the upstream manifest did not stop `npm pack`; only `npm publish` is blocked by it. The install resolved 233 packages (388 MB) in 23 seconds, because the library manifest declares its web UI and server dependencies (React, Express, lucide-react, fontsource, qrcode, solc, `@polkadot/extension-dapp`) as runtime dependencies. A headless consumer carries them without using them.
@@ -163,7 +163,7 @@ It does not prove:
 - **An external builder.** This repository was built by an AI agent on the ReviveCheck author's machine, with the author's checkout available for reading. Where the documentation did not state a function signature, the agent read library source; `ONBOARDING_LOG.md` lists every such instance as author assistance. Nobody outside the project has repeated this.
 - **Adoption.** No third party runs this list.
 - **Independent review.** The trusted reviewer (`0x95db…4065`) and the release owner (`0x48b9…a71b`) are both accounts controlled by the ReviveCheck project. The on-chain record shows role separation between two signers, nothing more; the policy's `basis` text says so and is copied into every evaluation.
-- **A tagged source state.** The tarball was packed from a working tree with uncommitted changes (HEAD `4dfb1e3` plus modifications). Its SHA-256 identifies the artifact precisely, but no upstream commit or tag reproduces it byte for byte yet.
+- **A published upstream commit.** The tarball reproduces from ReviveCheck commit `8aee632` with a clean tree, but that commit is not yet pushed or tagged upstream; until it is, only its SHA-256 identifies the artifact for a third party.
 - **RPC honesty or future state.** The evaluator trusts the public nodes it reads, and a `valid` result is a point-in-time statement; evaluate again before each use.
 
 ## CI

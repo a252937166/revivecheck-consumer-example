@@ -1,17 +1,20 @@
 # Package artifact consumed by this repository.
 #
-# Produced on 2026-10-25T09:51:24Z with `npm pack --pack-destination <this repo>/vendor`
-# run inside the ReviveCheck source checkout (branch redesign/custody-record,
-# HEAD 4dfb1e3 with uncommitted working-tree changes; package.json version 0.3.0,
-# "private": true). `npm pack` completed in 2 s, exit 0, and created no files in the
-# source checkout (its `git status --porcelain` was identical before and after).
+# Produced on 2026-10-25T10:34:11Z with `npm pack --pack-destination <this repo>/vendor`
+# run inside the ReviveCheck source checkout at commit
+# 8aee632f9eff67211e482605527a043d89aa6b8a (branch redesign/custody-record, clean
+# working tree; package.json version 0.3.0, "private": true). Checking out that commit
+# and running the same command reproduces the artifact. It replaced an earlier artifact
+# (SHA-256 e93c32da088e653f4d30708f523994e53f4fae85eb4f95f15e843493d75c9177) that had
+# been packed at 09:51:24Z from HEAD 4dfb1e3 with uncommitted changes; the library code
+# (lib/) is identical in both, the packaged documentation differs.
 #
-# Tarball contents: 38 files, 338,308 bytes unpacked (lib/, contracts/*.sol,
+# Tarball contents: 38 files, 344,003 bytes unpacked (lib/, contracts/*.sol,
 # contracts/deployed/v1, mcp/, scripts/revivecheck.js, docs/API.md, docs/POLICY.md,
 # docs/INTEGRATION.md, README.md, LICENSE, package.json).
 #
 # Verify with: shasum -a 256 -c vendor/CHECKSUMS.txt
-e93c32da088e653f4d30708f523994e53f4fae85eb4f95f15e843493d75c9177  revivecheck-0.3.0.tgz
-# npm's own figures for the same file: size 97699 bytes,
-# shasum (SHA-1) 57f770b90315ac95ab12cbe3e10a2127457b6fb9,
-# integrity sha512-WHJfdZwSM8UIuDN2PqnzqZdxu6VTmYtWeNt3ZR9i0FVmeWDTh6/Rm9maSlhNNO90gl4QWnwgiGsp6S3qGgjlbg==
+472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c  revivecheck-0.3.0.tgz
+# npm's own figures for the same file: size 99536 bytes,
+# shasum (SHA-1) 1052678e77c0a41e74e7a05e756cbc310f7d605a,
+# integrity sha512-hsdhb/aCsZ8lXKaTHNUYVUVbhe77XoT+Vp6gC76WVdG9dQk1wn1+KoohKC2p5TOxEhhZ9X3M9K4VAnEW75zYuA==

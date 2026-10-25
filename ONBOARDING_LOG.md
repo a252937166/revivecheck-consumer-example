@@ -72,3 +72,7 @@ Everything else (the policy text, the configuration, the allow-list rule, the fi
 - Live on 2026-10-25T09:59:21.688Z: **allowed**, evaluation `valid` at finalized block #187437, the report fetched from chain data rather than copied.
 - Offline: six scenarios behave as specified; `npm test` passes 10 of 10, also from a fresh clone of the committed repository.
 - Not shown: an external builder, adoption, independent review (owner and reviewer are project-controlled), or a tagged upstream source state for the tarball (it was packed from a working tree with uncommitted changes).
+
+## Addendum, 2026-10-25T10:34Z: the artifact re-packed from a clean commit
+
+After the ReviveCheck working tree was committed (final commit `8aee632f9eff67211e482605527a043d89aa6b8a`, clean tree), the author's agent ran `npm pack --pack-destination <this repo>/vendor` there again. The new tarball (SHA-256 `472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c`, 99,536 bytes, 38 files) replaced the earlier one (`e93c32da…9177`, packed at 09:51Z from an uncommitted tree). The library code under `lib/` had not changed between the two; the packaged `README.md`, `docs/POLICY.md` and `docs/INTEGRATION.md` had. `vendor/CHECKSUMS.txt` and the README were updated, `npm install` refreshed the lockfile integrity for the file dependency, and `npm test` was run again; the results are recorded in the commit that carries this addendum. The live check of 09:59Z was not repeated; it stands as the record of the first artifact. This still does not make the run an external builder's.
