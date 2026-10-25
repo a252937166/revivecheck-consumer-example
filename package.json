@@ -1,0 +1,20 @@
+{
+  "name": "revivecheck-consumer-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A DEX allow-list that enables a token only while a ReviveCheck policy evaluation is valid. Installs ReviveCheck from a packed tarball; a second consumer outside the ReviveCheck source tree.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node src/check.js",
+    "check:fixture": "node src/check.js --fixture fixtures/valid-r2.json",
+    "test": "node --test test/*.test.js",
+    "fixtures:import": "node scripts/import-capture.js"
+  },
+  "dependencies": {
+    "revivecheck": "file:vendor/revivecheck-0.3.0.tgz"
+  }
+}
