@@ -34,7 +34,9 @@ All times UTC.
 | 09:57 | `shasum -a 256 -c vendor/CHECKSUMS.txt` | <1 s | OK (comment lines tolerated by macOS `shasum`; CI uses `grep -v '^#' … \| sha256sum -c -` for GNU coreutils) |
 | 09:59:01 | **Live** `npm run check` | **22 s** wall clock, exit 0 | ALLOWED on the first attempt. `retrieveEvidence` 9,876 ms (report `1faef921…` from block #187145, 7,404 bytes, publisher `5GH8LpSTf6sp31FeacbFE99E3b9NQb5E7xWHeBL8XqW3YhTt`); `collectPolicyInputs` 8,678 ms; all three reads at finalized block #187437; evaluation `valid`, 35/35 checks; `evaluatedAt` 2026-10-25T09:59:21.688Z; evaluation hash `c799567e1c76991101fd586f3f71372c1159fc15bd1678809c22858bd7bc749b`. No retry was needed. Outputs committed under `out/` |
 | 10:00 | `npm test` (`node --test test/*.test.js`) | **6 s**, exit 0 | 10 tests, 10 passed, 0 failed |
-| 10:00–10:10 | Write `README.md`, this log; commit | | see the repository history |
+| 10:00–10:04 | Write `README.md`, this log; three commits | | `a2eccbd` artifact and manifest, `a909393` consumer and tests, `b052a05` live outputs and docs |
+| 10:05:33 | **Fresh clone check**: `git clone` of commit `b052a05` into an empty directory, `shasum -a 256 -c vendor/CHECKSUMS.txt`, `npm ci`, `npm test`, the valid fixture and the outage fixture | 12 s in total (`npm ci` 3 s from the local npm cache, `npm test` 6 s) | checksum OK; 233 packages; 10/10 tests passed; `valid-r2` allowed with exit 0 and the same evaluation hash `c6803afd…` as before; `unavailable` denied with exit 1. The committed state is self-sufficient: nothing outside the repository and the npm cache was needed |
+| 10:06 | Parse `.github/workflows/allowlist.yml` with a YAML parser | <1 s | valid; jobs `offline` (8 steps) and `live` (5 steps). The workflow itself has not run, because the repository has not been pushed |
 
 ## Failures and how they were resolved
 
@@ -68,5 +70,5 @@ Everything else (the policy text, the configuration, the allow-list rule, the fi
 - The package installs from `vendor/revivecheck-0.3.0.tgz` (SHA-256 `e93c32da…9177`) in a clean project in 23 seconds; all 14 export specifiers resolve.
 - A second consumer, distinct from the upstream example, implements a DEX allow-list on `revivecheck/policy`, `revivecheck/service` and `revivecheck/report` alone, with its own policy (hash `795942d6…f8c3`).
 - Live on 2026-10-25T09:59:21.688Z: **allowed**, evaluation `valid` at finalized block #187437, the report fetched from chain data rather than copied.
-- Offline: six scenarios behave as specified; `npm test` passes 10 of 10.
+- Offline: six scenarios behave as specified; `npm test` passes 10 of 10, also from a fresh clone of the committed repository.
 - Not shown: an external builder, adoption, independent review (owner and reviewer are project-controlled), or a tagged upstream source state for the tarball (it was packed from a working tree with uncommitted changes).
