@@ -1,7 +1,9 @@
 # Offline acceptance for the allow-list consumer. Everything in the `offline` job runs
 # without network access: the package is installed from the vendored tarball, the tests
 # replay reads captured on the Portaldot V3 testnet, and the fixture checks prove both
-# directions (the valid fixture must pass, every refusal fixture must fail).
+# directions (the valid fixture must pass, every refusal fixture must fail). Each case
+# keeps its allow-list, evaluation, inputs and decision-evidence documents as an artifact,
+# and every decision-evidence document is reconstructed by the second-reader command.
 #
 # The `live` job is manual only. It reads the public testnet nodes and fails when they do
 # not answer, because an unavailable verification is `unknown`, never a pass.
@@ -14,7 +16,7 @@ on:
 
 jobs:
   offline:
-    name: Offline tests and fixture checks
+    name: Offline tests, fixture checks and reconstruction
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,25 +27,32 @@ jobs:
         run: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
       - name: Install from the vendored tarball
         run: npm ci
-      - name: Unit and scenario tests
+      - name: Unit and scenario tests (command line, evaluator, selector, decision evidence)
         run: npm test
       - name: Fixture check that must pass (approved revision 2, correct entry)
         run: npm run check -- --fixture fixtures/valid-r2.json --out .ci-out/valid-r2
-      - name: Fixture checks that must fail
+      - name: Fixture checks that must fail (wrong entry, superseded, revoked, unavailable, expired)
         run: |
-          for fixture in superseded-r1 revoked-r2 unavailable; do
-            if npm run check -- --fixture "fixtures/$fixture.json" --out ".ci-out/$fixture"; then
-              echo "::error::$fixture was allowed; it must be denied"
-              exit 1
-            fi
-            echo "$fixture: denied as expected"
+          set -e
+          fail_case() {
+            if npm run check -- "$@"; then echo "::error::$* was allowed; it must be denied"; exit 1; fi
+            echo "denied as expected: $*"
+          }
+          fail_case --fixture fixtures/valid-r2.json --config fixtures/config-wrong-decimals.json --out .ci-out/wrong-decimals
+          fail_case --fixture fixtures/superseded-r1.json --out .ci-out/superseded-r1
+          fail_case --fixture fixtures/revoked-r2.json --out .ci-out/revoked-r2
+          fail_case --fixture fixtures/unavailable.json --out .ci-out/unavailable
+          fail_case --fixture fixtures/valid-r2.json --now 2026-11-02T09:43:18.329Z --out .ci-out/expired
+      - name: Reconstruct every decision from its evidence document alone
+        run: |
+          set -e
+          for dir in valid-r2 wrong-decimals superseded-r1 revoked-r2 expired; do
+            node src/reconstruct.js ".ci-out/$dir/decision-evidence.json"
           done
-          if npm run check -- --fixture fixtures/valid-r2.json --config fixtures/config-wrong-decimals.json --out .ci-out/wrong-decimals; then
-            echo "::error::the wrong-decimals configuration was allowed; it must be denied"
-            exit 1
-          fi
-          echo "wrong-decimals: denied as expected"
-      - name: Keep the fixture outputs
+          test ! -f .ci-out/unavailable/decision-evidence.json || node src/reconstruct.js .ci-out/unavailable/decision-evidence.json
+      - name: Build the browser interface
+        run: npm run web:build
+      - name: Keep every case's outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -62,6 +71,8 @@ jobs:
       - run: npm ci
       - name: Evaluate the allow-list against the chain
         run: npm run check -- --out .ci-out/live
+      - name: Reconstruct the live decision from its evidence document
+        run: node src/reconstruct.js .ci-out/live/decision-evidence.json
       - name: Keep the live outputs
         if: always()
         uses: actions/upload-artifact@v4

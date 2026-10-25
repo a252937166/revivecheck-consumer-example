@@ -76,3 +76,29 @@ Everything else (the policy text, the configuration, the allow-list rule, the fi
 ## Addendum, 2026-10-25T10:34Z: the artifact re-packed from a clean commit
 
 After the ReviveCheck working tree was committed (final commit `8aee632f9eff67211e482605527a043d89aa6b8a`, clean tree), the author's agent ran `npm pack --pack-destination <this repo>/vendor` there again. The new tarball (SHA-256 `472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c`, 99,536 bytes, 38 files) replaced the earlier one (`e93c32da…9177`, packed at 09:51Z from an uncommitted tree). The library code under `lib/` had not changed between the two; the packaged `README.md`, `docs/POLICY.md` and `docs/INTEGRATION.md` had. `vendor/CHECKSUMS.txt` and the README were updated, `npm install` refreshed the lockfile integrity for the file dependency, and `npm test` was run again; the results are recorded in the commit that carries this addendum. The live check of 09:59Z was not repeated; it stands as the record of the first artifact. This still does not make the run an external builder's.
+
+## Addendum, 2026-10-25T13:40Z: the 0.4.0 artifact, the browser interface and the second live run
+
+Who: the same AI agent (Claude, model Fable 5.1, in Claude Code) on the author's machine, with the author's checkout next to this repository. Still not an external builder.
+
+| Time (UTC) | Step | Result |
+| --- | --- | --- |
+| 13:26 | `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout (working tree with the day's uncommitted changes; the clean-commit re-pack is recorded below) | `revivecheck-0.4.0.tgz`, 118,382 bytes, 44 files, SHA-256 `a81bfb562b3995db79b1a0fa6625bd58648c48cad56af3340f1a304d8da2382f`. New in the artifact: `lib/entry.js`, `lib/current.js`, `lib/decision.js`, `docs/LIBRARY.md`, and the two MCP resource files; upstream moved its web and server dependencies to development dependencies |
+| 13:27 | `npm uninstall revivecheck`, `npm install file:vendor/revivecheck-0.4.0.tgz`, then `npm install --save-dev vite@7.1.12 @vitejs/plugin-react@5.0.4 react@19.1.1 react-dom@19.1.1 qrcode@1.5.4` | 317 packages, `node_modules` 247 MB (the browser build tools included); lockfile integrity refreshed for the file dependency |
+| 13:28 | `npm test` against the new artifact, before any new code | 9 of 10 passed; the one failure was this repository's own checksum test still naming 0.3.0, updated afterwards |
+| 13:30 | Wrote `src/evaluate.js` (the evaluator shared by the command and the browser), `src/decision-evidence.js`, `src/reconstruct.js`, `src/selector.js`, `web/` (the Token eligibility demo), `test/evaluate.test.js`; `src/check.js` now delegates to the shared evaluator and also writes `decision-evidence.json` | `npm test`: 15 of 15 |
+| 13:32 | `npx vite build` | `dist-web/`: `index.html`, one CSS file, a 1.43 MB main chunk (the Polkadot and ethers clients) and a 26 KB service chunk |
+| 13:34 to 13:38 | Clean Chromium session (Playwright, empty storage, no wallet) on `vite preview`: the complete journey | wrong entry: "Withheld: the entry differs from the approved report", policy Valid, `entry-mismatch:decimals`, evaluated at #189591, pUSD disabled in the selector; "Correct to the approved values" reset the decision to "Not checked yet"; the second check: "Available now" at #189595, pUSD selectable, Continue enabled; "Approval revoked" replay labelled RECORDED with `approval-revoked`, `consumer-not-listed`, live decision unchanged; changing decimals back to 18 reset the decision again; no overflow at 390 px; no console errors; no browser storage written |
+| 13:36 | **Live** `npm run check` | ALLOWED on the first attempt, 20.8 s; `retrieveEvidence` 9,469 ms; all three reads at finalized block #189599; evaluation `4c79e8d6…`; `out/decision-evidence.json` written (`add90c6c…`) and reconstructed consistently by `node src/reconstruct.js` |
+
+Failures and observations:
+
+1. **Locator ambiguity in the browser check.** Playwright's `getByLabel('Decimals')` matched both the decimals input and the selector whose label text contains "6 decimals"; the check used the spinbutton role instead. A test-tooling detail, not a page defect.
+2. **A `&&` next to `??` in JSX** broke the first build (esbuild requires parentheses); fixed by removing the mixed expression.
+3. **Bundle weight.** `revivecheck/current`, `/entry` and `/decision` import the policy module, which imports the registry and token-list modules and, through them, the chain clients; the main chunk therefore carries the Polkadot and ethers code even before the first check. The page works; it is a packaging observation for upstream.
+
+Author assistance, this time: none beyond the packaged documentation. `docs/LIBRARY.md`, shipped in the 0.4.0 artifact, now states the signatures, return shapes and limits that items 1 to 3 of the first log had to be read from source (`createBinding` and its limits, `collectPolicyInputs`, `retrieveEvidence` returning `run`, `closeConnections`); the three new modules were used from that document alone. The fixtures' raw reads remain the author's captures, as before.
+
+Still not shown: an external builder, adoption, independent review, or a public remote for this repository (the Pages workflow deploys the demo only after a push).
+
+Final re-pack, 2026-10-25T13:50Z: after the upstream work was committed (ReviveCheck commit `6b7402f`, clean tree), `npm pack` there produced `revivecheck-0.4.0.tgz` with SHA-256 `aa48acddc3c7d779cfc2849c7c5331c09802db24d50f6b28ddc0702ea87fcf35` (119,138 bytes, 44 files), which replaced the working-tree pack of 13:26 (`a81bfb56…`; the packed `README.md` and `docs/INTEGRATION.md` had changed in between, `lib/` had not). Upstream's own clean-install verification of this exact artifact: 204 packages, 170.6 MB, 23.7 s. `npm install` refreshed the lockfile integrity, `npm test` and `npm run web:build` were run again; the results are in the commit that carries this line.

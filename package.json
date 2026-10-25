@@ -1,9 +1,9 @@
 {
   "name": "revivecheck-consumer-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "A DEX allow-list that enables a token only while a ReviveCheck policy evaluation is valid. Installs ReviveCheck from a packed tarball; a second consumer outside the ReviveCheck source tree.",
+  "description": "A token eligibility demo: a DEX allow-list that enables a token only while its own ReviveCheck policy evaluation is valid and the entry equals the approved report. Installs ReviveCheck from a packed tarball; a second consumer outside the ReviveCheck source tree, with a command line and a public browser interface.",
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -11,10 +11,21 @@
   "scripts": {
     "check": "node src/check.js",
     "check:fixture": "node src/check.js --fixture fixtures/valid-r2.json",
+    "reconstruct": "node src/reconstruct.js",
     "test": "node --test test/*.test.js",
+    "web:dev": "vite",
+    "web:build": "vite build",
+    "web:preview": "vite preview",
     "fixtures:import": "node scripts/import-capture.js"
   },
   "dependencies": {
-    "revivecheck": "file:vendor/revivecheck-0.3.0.tgz"
+    "revivecheck": "file:vendor/revivecheck-0.4.0.tgz"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "qrcode": "^1.5.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "vite": "^7.1.12"
   }
 }

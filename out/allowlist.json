@@ -2,7 +2,7 @@
   "schema": "revivecheck-consumer.allowlist.v1",
   "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
   "source": "live:portaldot-v3-testnet",
-  "generatedAt": "2026-10-25T09:59:21.688Z",
+  "generatedAt": "2026-10-25T13:36:28.849Z",
   "network": {
     "key": "testnet",
     "chainId": 420420777,
@@ -32,22 +32,22 @@
     }
   ],
   "denied": [],
-  "evaluatedAt": "2026-10-25T09:59:21.688Z",
+  "evaluatedAt": "2026-10-25T13:36:28.849Z",
   "checkpoints": {
     "registry": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
     },
     "observation": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
     },
     "listing": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
     },
     "storage": {
       "blockNumber": "187145",
@@ -63,11 +63,11 @@
   },
   "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
   "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
-  "evaluationHash": "c799567e1c76991101fd586f3f71372c1159fc15bd1678809c22858bd7bc749b",
+  "evaluationHash": "4c79e8d6807a401565d3d542650d76c7d7e447c60367b9c11b79ab16f078288b",
   "evaluationStatus": "valid",
   "binding": {
-    "id": "f3736a5e-6884-4460-b70f-7499e37aa024",
-    "bindingHash": "eb2dcbd86e16c4ddbdaf0710958edd91628d7607aa4879f5d78f6cb343aa0b9e",
+    "id": "1854b926-7c25-4631-afad-2214651ab585",
+    "bindingHash": "7831d5df9adcd092b86b21039de5540e02c8ce307ef37b0ced669fedc29ffd85",
     "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
     "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
     "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
@@ -77,7 +77,7 @@
       "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
     },
     "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
-    "boundAt": "2026-10-25T09:59:13.007Z"
+    "boundAt": "2026-10-25T13:36:21.171Z"
   },
   "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
   "roles": {

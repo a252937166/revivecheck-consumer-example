@@ -1,0 +1,49 @@
+# Publish the Token eligibility demo (web/) to GitHub Pages on every push to main. The
+# page is a static build; every check it performs runs in the visitor's browser against
+# the public Portaldot V3 testnet nodes. Nothing here holds a key or signs anything.
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify the vendored package artifact
+        run: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
+      - run: npm ci
+      - run: npm test
+      - name: Build the browser app under the repository path
+        run: WEB_BASE="/${GITHUB_REPOSITORY#*/}/" npm run web:build
+      - name: Record what was built
+        run: |
+          mkdir -p dist-web
+          node -e "const fs=require('fs');const crypto=require('crypto');const walk=(d,b=d)=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name,b):[(d+'/'+e.name).slice(b.length+1)]);const files=walk('dist-web').filter(f=>f!=='hosting.json').sort().map(f=>({path:f,bytes:fs.statSync('dist-web/'+f).size,sha256:crypto.createHash('sha256').update(fs.readFileSync('dist-web/'+f)).digest('hex')}));fs.writeFileSync('dist-web/hosting.json',JSON.stringify({schema:'revivecheck-consumer.hosting-manifest.v1',sourceCommit:process.env.GITHUB_SHA,repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID,builtAt:new Date().toISOString(),files},null,2)+'\n')"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-web
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

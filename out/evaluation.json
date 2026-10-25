@@ -4,7 +4,7 @@
   "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
   "subject": "0x00001e6100000000000000000000000000010000",
   "subjectKind": "native-asset",
-  "bindingId": "f3736a5e-6884-4460-b70f-7499e37aa024",
+  "bindingId": "1854b926-7c25-4631-afad-2214651ab585",
   "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
   "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
   "revision": "2",
@@ -81,7 +81,7 @@
     {
       "id": "evidence.age",
       "status": "passed",
-      "observed": "1804 s since the report",
+      "observed": "14831 s since the report",
       "expected": "at most 604800 s old, with at most 60 s clock skew"
     },
     {
@@ -93,7 +93,7 @@
     {
       "id": "registry.provenance",
       "status": "passed",
-      "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927, 2026-10-25T09:59:17.931Z",
+      "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927, 2026-10-25T13:36:25.004Z",
       "expected": "the dated registry contract and release"
     },
     {
@@ -153,7 +153,7 @@
     {
       "id": "consumer.provenance",
       "status": "passed",
-      "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000, 2026-10-25T09:59:20.113Z",
+      "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000, 2026-10-25T13:36:27.390Z",
       "expected": "the dated consumer contract and token"
     },
     {
@@ -165,13 +165,13 @@
     {
       "id": "consumer.fresh",
       "status": "passed",
-      "observed": "2 s old",
+      "observed": "1 s old",
       "expected": "at most 900 s old"
     },
     {
       "id": "consumer.identity",
       "status": "passed",
-      "observed": "identity at 0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
+      "observed": "identity at 0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
       "expected": "consumer identity through both interfaces at the listing checkpoint"
     },
     {
@@ -225,25 +225,25 @@
   ],
   "checkpoint": {
     "registry": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
     },
     "observation": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
     },
     "listing": {
-      "number": "187437",
-      "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-      "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+      "number": "189599",
+      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
     }
   },
   "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
   "simulation": false,
-  "evaluatedAt": "2026-10-25T09:59:21.688Z",
+  "evaluatedAt": "2026-10-25T13:36:28.849Z",
   "nextAction": "Enable the subject under this policy. Validity is a point-in-time result: evaluate again before each use.",
   "caveat": "A valid result means every policy condition held at the recorded checkpoints and time. It is not a guarantee of future state, a security audit or independent review; the trusted reviewer set is the policy author's choice.",
-  "evaluationHash": "c799567e1c76991101fd586f3f71372c1159fc15bd1678809c22858bd7bc749b"
+  "evaluationHash": "4c79e8d6807a401565d3d542650d76c7d7e447c60367b9c11b79ab16f078288b"
 }

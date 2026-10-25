@@ -1,2 +1,4 @@
 node_modules/
 .ci-out/
+dist-web/
+.playwright-cli/

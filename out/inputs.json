@@ -1,18 +1,18 @@
 {
   "schema": "revivecheck-consumer.inputs.v1",
   "source": "live:portaldot-v3-testnet",
-  "collectedAt": "2026-10-25T09:59:21.688Z",
-  "now": "2026-10-25T09:59:21.688Z",
+  "collectedAt": "2026-10-25T13:36:28.849Z",
+  "now": "2026-10-25T13:36:28.849Z",
   "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
   "attempts": [
     {
       "attempt": 1,
-      "startedAt": "2026-10-25T09:59:03.130Z",
-      "retrieveEvidenceMs": 9876,
-      "collectPolicyInputsMs": 8678,
+      "startedAt": "2026-10-25T13:36:11.702Z",
+      "retrieveEvidenceMs": 9469,
+      "collectPolicyInputsMs": 7676,
       "ok": true,
       "failedReads": [],
-      "ms": 18558
+      "ms": 17147
     }
   ],
   "retrieval": {
@@ -31,7 +31,7 @@
   },
   "binding": {
     "schema": "revivecheck.binding.v1",
-    "id": "f3736a5e-6884-4460-b70f-7499e37aa024",
+    "id": "1854b926-7c25-4631-afad-2214651ab585",
     "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
     "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
     "subject": "0x00001e6100000000000000000000000000010000",
@@ -41,13 +41,13 @@
     "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
     "revision": "2",
     "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
-    "boundAt": "2026-10-25T09:59:13.007Z",
+    "boundAt": "2026-10-25T13:36:21.171Z",
     "note": "Allow-list binding for pusd-catalog-v2: report 1faef921a720… on revision 2.",
     "storage": {
       "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
       "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
     },
-    "bindingHash": "eb2dcbd86e16c4ddbdaf0710958edd91628d7607aa4879f5d78f6cb343aa0b9e"
+    "bindingHash": "7831d5df9adcd092b86b21039de5540e02c8ce307ef37b0ced669fedc29ffd85"
   },
   "fixture": null,
   "inputs": {
@@ -61,27 +61,27 @@
       "genesisMatches": true,
       "runtime": "portaldot-v3/3002",
       "finalized": {
-        "number": "187437",
-        "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3"
+        "number": "189599",
+        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
       },
       "evm": {
         "rpcUrl": "https://test-evm-rpc-v3.portaldot.dev",
         "chainId": 420420777,
-        "finalizedHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+        "finalizedHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
       },
       "explorer": "https://scanner-testnet-v3.portaldot.dev",
-      "observedAt": "2026-10-25T09:59:17.286Z"
+      "observedAt": "2026-10-25T13:36:24.484Z"
     },
     "registry": {
       "address": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
       "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
       "block": {
-        "number": "187437",
-        "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-        "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+        "number": "189599",
+        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
       },
-      "observedAt": "2026-10-25T09:59:17.931Z",
+      "observedAt": "2026-10-25T13:36:25.004Z",
       "release": {
         "exists": true,
         "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
@@ -128,9 +128,9 @@
       "token": "0x00001e6100000000000000000000000000010000",
       "list": "0xedaf8a25bb583ad164a94191b762414277198df9",
       "block": {
-        "number": "187437",
-        "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-        "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+        "number": "189599",
+        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
       },
       "listed": true,
       "entry": {
@@ -166,9 +166,9 @@
       "identity": {
         "address": "0xedaf8a25bb583ad164a94191b762414277198df9",
         "block": {
-          "number": "187437",
-          "nativeHash": "0x48711c27ffa5cd8e7d5f2649c506190097aaca1ea58e2c7e772d1024c59bd3c3",
-          "evmHash": "0xb3f753922091382329a7e543fea6cf0fbf2c12704256e676af32cb01857d5bde"
+          "number": "189599",
+          "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+          "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
         },
         "evm": {
           "version": "2",
@@ -199,11 +199,11 @@
           }
         },
         "runtimeCodeHash": "0xf43602cb2e6593f029d9ce84e9e18c38d36079689e0fa5a2251d0be6c360074d",
-        "observedAt": "2026-10-25T09:59:20.113Z",
+        "observedAt": "2026-10-25T13:36:27.390Z",
         "version": 2,
         "versionSource": "on-chain-version-getter"
       },
-      "observedAt": "2026-10-25T09:59:20.113Z"
+      "observedAt": "2026-10-25T13:36:27.390Z"
     },
     "evidence": {
       "verified": true,

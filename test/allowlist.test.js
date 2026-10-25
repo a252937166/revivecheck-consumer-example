@@ -30,12 +30,16 @@ function check(...args) {
 const codes = (run) => run.allowlist.denied[0]?.reasons ?? [];
 
 test('the vendored tarball matches CHECKSUMS.txt and the documented exports resolve from it', async () => {
-  const line = readFileSync(path.join(root, 'vendor/CHECKSUMS.txt'), 'utf8').split('\n').find((text) => /^[a-f0-9]{64}\s+revivecheck-0\.3\.0\.tgz$/.test(text));
+  const line = readFileSync(path.join(root, 'vendor/CHECKSUMS.txt'), 'utf8').split('\n').find((text) => /^[a-f0-9]{64}\s+revivecheck-0\.4\.0\.tgz$/.test(text));
   assert.ok(line, 'CHECKSUMS.txt names the tarball');
-  const actual = createHash('sha256').update(readFileSync(path.join(root, 'vendor/revivecheck-0.3.0.tgz'))).digest('hex');
+  const actual = createHash('sha256').update(readFileSync(path.join(root, 'vendor/revivecheck-0.4.0.tgz'))).digest('hex');
   assert.equal(actual, line.split(/\s+/)[0]);
   const pkg = (await import('revivecheck/package.json', { with: { type: 'json' } })).default;
-  assert.equal(pkg.version, '0.3.0');
+  assert.equal(pkg.version, '0.4.0');
+  for (const [specifier, names] of [['revivecheck/entry', ['approvedEntry', 'compareEntry', 'entryDecision']], ['revivecheck/current', ['initialDecision', 'beginCheck', 'settleCheck', 'failCheck', 'canAct']], ['revivecheck/decision', ['buildDecisionEvidence', 'reconstructDecision', 'decisionSheetHtml', 'explainReason', 'RENEWAL_STEPS']]]) {
+    const module = await import(specifier);
+    for (const name of names) assert.equal(typeof module[name] === 'function' || typeof module[name] === 'object', true, `${specifier}.${name}`);
+  }
   const policy = await import('revivecheck/policy');
   const service = await import('revivecheck/service');
   const report = await import('revivecheck/report');
