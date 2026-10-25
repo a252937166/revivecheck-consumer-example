@@ -1,0 +1,70 @@
+# Offline acceptance for the allow-list consumer. Everything in the `offline` job runs
+# without network access: the package is installed from the vendored tarball, the tests
+# replay reads captured on the Portaldot V3 testnet, and the fixture checks prove both
+# directions (the valid fixture must pass, every refusal fixture must fail).
+#
+# The `live` job is manual only. It reads the public testnet nodes and fails when they do
+# not answer, because an unavailable verification is `unknown`, never a pass.
+name: allowlist
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  offline:
+    name: Offline tests and fixture checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify the vendored package artifact
+        run: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
+      - name: Install from the vendored tarball
+        run: npm ci
+      - name: Unit and scenario tests
+        run: npm test
+      - name: Fixture check that must pass (approved revision 2, correct entry)
+        run: npm run check -- --fixture fixtures/valid-r2.json --out .ci-out/valid-r2
+      - name: Fixture checks that must fail
+        run: |
+          for fixture in superseded-r1 revoked-r2 unavailable; do
+            if npm run check -- --fixture "fixtures/$fixture.json" --out ".ci-out/$fixture"; then
+              echo "::error::$fixture was allowed; it must be denied"
+              exit 1
+            fi
+            echo "$fixture: denied as expected"
+          done
+          if npm run check -- --fixture fixtures/valid-r2.json --config fixtures/config-wrong-decimals.json --out .ci-out/wrong-decimals; then
+            echo "::error::the wrong-decimals configuration was allowed; it must be denied"
+            exit 1
+          fi
+          echo "wrong-decimals: denied as expected"
+      - name: Keep the fixture outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixture-outputs
+          path: .ci-out
+
+  live:
+    name: Live check (manual; needs the public testnet nodes)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Evaluate the allow-list against the chain
+        run: npm run check -- --out .ci-out/live
+      - name: Keep the live outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-outputs
+          path: .ci-out/live

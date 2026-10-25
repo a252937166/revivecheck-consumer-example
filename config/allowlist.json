@@ -1,0 +1,75 @@
+{
+  "schema": "revivecheck-consumer.config.v1",
+  "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
+  "policy": {
+    "schema": "revivecheck.policy.v1",
+    "name": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+    "network": {
+      "key": "testnet",
+      "chainId": 420420777,
+      "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd"
+    },
+    "runtime": { "specName": "portaldot-v3", "specVersions": ["3002"] },
+    "subject": {
+      "kind": "native-asset",
+      "assetId": "7777",
+      "address": "0x00001e6100000000000000000000000000010000"
+    },
+    "planHash": "ce76c98f90e2851aff534febe6c39a4802fbef32e478a665d3e4109352222191",
+    "evidence": {
+      "scope": "portaldot-testnet-readonly",
+      "maxAgeSeconds": 604800,
+      "maxObservationAgeSeconds": 900,
+      "requireInterfacesAgree": true,
+      "requireStoredOnChain": true
+    },
+    "reviewers": {
+      "trusted": ["0x95db300103ec8b45884b13ed85230fbf02114065"],
+      "threshold": 1,
+      "basis": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control."
+    },
+    "registry": {
+      "address": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+      "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+      "label": "pusd-catalog-v2"
+    },
+    "consumer": {
+      "address": "0xedaf8a25bb583ad164a94191b762414277198df9",
+      "requireListed": true,
+      "version": 2
+    }
+  },
+  "release": {
+    "label": "pusd-catalog-v2",
+    "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+    "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+    "revision": "2",
+    "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+    "storage": {
+      "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+      "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
+    }
+  },
+  "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
+  "entry": {
+    "chainId": 420420777,
+    "address": "0x00001e6100000000000000000000000000010000",
+    "symbol": "pUSD",
+    "name": "Portaldot USD (test)",
+    "decimals": 6,
+    "assetId": "7777"
+  },
+  "roles": {
+    "owner": {
+      "address": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+      "control": "the ReviveCheck project's development test account; it owns the pusd-catalog-v2 release and signed the listing"
+    },
+    "reviewer": {
+      "address": "0x95db300103ec8b45884b13ed85230fbf02114065",
+      "control": "the ReviveCheck project's separate reviewer test account; a distinct signer controlled by the same project, so this shows role separation, not independent review"
+    },
+    "operator": {
+      "control": "this repository's check command, run by an AI agent on the author's machine; it reads the chain and signs nothing"
+    }
+  }
+}
