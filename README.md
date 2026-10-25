@@ -1,4 +1,4 @@
-# ReviveCheck consumer example: a DEX allow-list with a public Token eligibility demo
+# ReviveCheck consumer example: a DEX allow-list with a public Token eligibility demo and a catalog release
 
 A second, separately built consumer of [ReviveCheck](https://github.com/a252937166/ReviveCheck), outside its source tree, that answers two questions: can the library be installed from a reproducible package artifact and used by a clean project through nothing but its documented interfaces, and can a real application action obey the decision it produces?
 
@@ -18,7 +18,7 @@ Everything is read-only. No key is held, nothing is signed, no transaction is se
 3. **Inspect evidence in ReviveCheck**: opens the exact bound report in the ReviveCheck App (`https://revivecheck.axiqo.xyz/?report=1faef921…#/review`), where its fingerprint is verified and it can be replayed at its pinned block. The same report hash is visible on both sides.
 4. Correct the entry to the approved values. The decision resets to "Not checked yet"; a corrected field causes a new evaluation.
 5. **Refresh status**: a fresh evaluation under this consumer's policy returns "Available now".
-6. **Choose a token**: the selector offers pUSD only while the current decision is valid, the entry equals the approved report and the permission's deadline has not passed; the option is built from the allow-list the evaluator produced, not from a flag. "Continue" is enabled only on a selectable option, and checks the clock again at the moment it is pressed (`proceedNow`): a press between timer ticks after the deadline is refused.
+6. **Release the eligible entry**: the selector offers pUSD only while the current decision is valid, the entry equals the approved report and the permission's deadline has not passed; the option is built from the allow-list the evaluator produced, not from a flag. **Prepare catalog release** is enabled only on a selectable entry, checks the clock again at the moment it is pressed (`proceedNow`; a press between timer ticks after the deadline is refused), then builds an immutable `revivecheck.catalog-release.v1` document from the exact artifacts of the current decision (policy, binding, retrieved report, reads, evaluation): the eligible entry with every field from the approved report, its decision evidence, the permission deadline, the previous release's hash and its own hash. The release is kept in this browser's history, downloaded, compared with its predecessor, and any release file can be loaded back and read the way a separate process reads it (verification from the document alone, then each entry's deadline). Live on 2026-10-25T18:49:46Z: release 1 `1353c61d…` at block 192,716.
 7. **Recorded states**: reads captured on the testnet on 2026-10-25 (approved and listed, revision superseded, approval revoked, node unavailable, evidence expired by the policy clock) replayed through the same logic with a persistent "RECORDED" label. A recorded state never enables the selector.
 8. **Download decision evidence**: the `revivecheck.decision-evidence.v1` document (JSON) and a human-readable sheet (HTML with QR codes), which `node src/reconstruct.js <file>` re-derives offline.
 
@@ -30,13 +30,15 @@ Run it locally with `npm run web:dev` (http://127.0.0.1:4190/) or build it with 
 
 | Path | What |
 | --- | --- |
-| `vendor/revivecheck-0.4.1.tgz`, `vendor/CHECKSUMS.txt` | the package artifact produced with `npm pack` from the ReviveCheck checkout, with its SHA-256; the previous 0.4.0 artifact is kept beside it as history |
-| `package.json`, `package-lock.json` | depends on `"revivecheck": "file:vendor/revivecheck-0.4.1.tgz"` (the lockfile carries the tarball's integrity); Node 22; Vite, React and `qrcode` only for the browser build |
+| `vendor/revivecheck-0.5.0.tgz`, `vendor/CHECKSUMS.txt` | the package artifact produced with `npm pack` from the ReviveCheck checkout, with its SHA-256; the previous 0.4.1 and 0.4.0 artifacts are kept beside it as history |
+| `package.json`, `package-lock.json` | depends on `"revivecheck": "file:vendor/revivecheck-0.5.0.tgz"` (the lockfile carries the tarball's integrity); Node 22; Vite, React and `qrcode` only for the browser build |
 | `config/allowlist.json` | the allow-list configuration: the policy, the release it relies on, the entry the operator intends to publish, and who controls each role |
 | `src/evaluate.js` | the evaluator shared by the command line and the browser: live (`runLive`) or from a fixture (`runFixture`), then `decide` |
 | `src/check.js` | the command: live or offline (`--fixture`), writes `allowlist.json`, `evaluation.json`, `inputs.json`, `decision-evidence.json` |
 | `src/allowlist.js` | the allow-list rule, derived from the approved report; this consumer's own implementation of the published-entry invariant on the public interfaces |
-| `src/selector.js` | the token selector's options, derived from the allow-list output and the current decision at a given clock; `proceedNow` is the Continue handler's own check |
+| `src/selector.js` | the token selector's options, derived from the allow-list output and the current decision at a given clock; `proceedNow` is the release handler's own clock check |
+| `out/releases/` | the live release gate run of 2026-10-25T18:50:21Z (`npm run release`): `catalog-release-1.json` (`329a8dbb…`, block 192,724, permission until 19:05:17Z), `outcome.json`, `decision-evidence.json` |
+| `test/release.test.js`, `test/browser/release-journey.mjs` | the release built from this consumer's own decision and read back; the gate command's exit codes on the fixtures; the browser journey of the release operation |
 | `src/decision-evidence.js`, `src/reconstruct.js` | the portable decision document and the second-reader command that re-derives it |
 | `web/` | the Token eligibility demo (React, Vite) |
 | `fixtures/*.json` | raw reads captured live on the testnet, labelled with provenance, for the refusal cases |
@@ -54,7 +56,7 @@ git clone <this repository> revivecheck-consumer-example
 cd revivecheck-consumer-example
 node -v                                           # v22 or later
 (cd vendor && shasum -a 256 -c CHECKSUMS.txt)     # Linux: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
-npm ci                                            # installs revivecheck from vendor/revivecheck-0.4.1.tgz
+npm ci                                            # installs revivecheck from vendor/revivecheck-0.5.0.tgz
 npm test                                          # offline: refusal cases, evaluator, selector, decision evidence
 ```
 
@@ -62,11 +64,11 @@ The package artifact:
 
 | | |
 | --- | --- |
-| File | `vendor/revivecheck-0.4.1.tgz` |
-| SHA-256 | `5a0003ae4d4603141210df8d2638dc2f31f2a91019c9e6e4c2078555a33a868b` |
-| Size | 122,445 bytes packed, 44 files |
-| Produced | 2026-10-25 with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout at commit `2e1673d` (branch `redesign/custody-record`, clean working tree); upstream verified the same bytes from an empty project (`artifacts/package-verification-2026-10-25-r2.json` there: 204 packages, 170.6 MB, 17.6 s). The 0.4.0 artifact (`aa48acdd…fcf35`, commit `6b7402f`) is kept as history |
-| Contents | `lib/` (including `entry.js`, `current.js`, `decision.js`), `contracts/*.sol`, `contracts/deployed/v1/`, `mcp/`, `scripts/revivecheck.js`, `public/lifecycle/reference.json` and `registry.json` (the MCP resources), `docs/API.md`, `docs/POLICY.md`, `docs/INTEGRATION.md`, `docs/LIBRARY.md`, `README.md`, `LICENSE`, `package.json` |
+| File | `vendor/revivecheck-0.5.0.tgz` |
+| SHA-256 | `d818494389e86ffad0d8005f0c6ca5a1d15babcd169f6b002938e979e5f594ef` |
+| Size | 143,423 bytes packed, 53 files |
+| Produced | 2026-10-25 with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout at commit `e105dfe` (branch `redesign/custody-record`, clean working tree); upstream verified the same bytes from an empty project, including the shipped release gate starter (204 packages, 170.7 MB, 18.6 s). The 0.4.1 artifact (`5a0003ae…a868b`, commit `2e1673d`) and the 0.4.0 artifact (`aa48acdd…fcf35`, commit `6b7402f`) are kept as history |
+| Contents | `lib/` (including `entry.js`, `current.js`, `decision.js`, `catalog-release.js`), `scripts/catalog-release.js` (the `revivecheck-catalog` command), `examples/release-gate-starter/`, `contracts/*.sol`, `contracts/deployed/v1/`, `mcp/`, `scripts/revivecheck.js`, `public/lifecycle/reference.json` and `registry.json` (the MCP resources), `docs/API.md`, `docs/POLICY.md`, `docs/INTEGRATION.md`, `docs/LIBRARY.md`, `README.md`, `LICENSE`, `package.json` |
 
 Upstream declares its web and server dependencies as development dependencies, so a headless consumer installs the library alone: upstream's own verification from an empty project measured 204 packages and 170.6 MB, against 233 packages and 388 MB for the 0.3.0 artifact. This repository installs 267 packages (248 MB) with `npm ci` because it also carries Vite, React and `qrcode` for the browser build.
 
@@ -89,6 +91,11 @@ npm run check -- --fixture fixtures/valid-r2.json --now 2026-11-02T09:43:18.329Z
 
 # Reconstruct a decision from its evidence document alone (no network, no other file).
 npm run reconstruct -- out/decision-evidence.json
+
+# The release gate: write out/releases/catalog-release-<n>.json only when the entry is permitted (exit 0; 1 refused, 2 unknown, 3 configuration error).
+npm run release                                             # live
+npm run release:fixture                                     # the same code path on the captured reads
+npm run release:read -- out/releases/catalog-release-1.json # verify the release from the document alone and apply the deadline (add --live to re-evaluate on fresh reads)
 
 # The browser demo.
 npm run web:dev          # http://127.0.0.1:4190/
@@ -123,6 +130,7 @@ From the installed package, by subpath export (documented in the package's `docs
 | `revivecheck/entry` | `entryDecision`, `canonicalEntry` (the browser's entry comparison; `src/allowlist.js` keeps its own implementation of the same rule for the allow-list document) |
 | `revivecheck/current` | `initialDecision`, `beginCheck`, `settleCheck`, `failCheck`, `changeSelection`, `ageDecision`, `canAct`, `describeDecision` |
 | `revivecheck/decision` | `buildDecisionEvidence`, `reconstructDecision`, `formatReconstruction`, `decisionSheetHtml`, `explainReason`, `evidenceExpiry`, `RENEWAL_STEPS` |
+| `revivecheck/catalog-release` | `buildCatalogRelease`, `readCatalogRelease`, `compareCatalogReleases`, `selectorFrom` (the page); `verifyCatalogRelease`, `EXIT` (the tests); the `revivecheck-catalog` command (the scripts and CI) |
 | `revivecheck/package.json` | the installed version |
 
 Documents, as defined in the package's `docs/POLICY.md` and `docs/LIBRARY.md`:
@@ -146,7 +154,7 @@ This repository's own documents: `revivecheck-consumer.config.v1`, `revivecheck-
 | Evaluated eight days after the capture | `valid-r2.json --now 2026-11-02T09:43:18.329Z` | denied, `expired`: `evidence-expired`, `observation-stale` |
 | At the expiry boundary | `--now 2026-11-01T09:29:17.646Z` is still acceptable; one millisecond later is `expired` | `test/evaluate.test.js` |
 
-`test/evaluate.test.js` also proves, offline, what the page does: the wrong entry is denied and the corrected one allowed from the same reads; every refusal, a failed check and a lapsed result leave the selector unavailable; every decision document reconstructs, and a changed outcome fails reconstruction.
+`test/release.test.js` builds the release from this consumer's own decision (the eligible entry only; wrong metadata, a revoked approval, expired evidence and unavailable reads release nothing; a second release chains to the first; fresh reads showing the revocation withhold an entry still within its deadline) and runs the gate command on the fixtures (exit 0 with the release written, 1 refused, 2 unknown, 3 configuration error). `test/evaluate.test.js` also proves, offline, what the page does: the wrong entry is denied and the corrected one allowed from the same reads; every refusal, a failed check and a lapsed result leave the selector unavailable; every decision document reconstructs, and a changed outcome fails reconstruction.
 
 The fixtures reuse raw reads that the upstream ReviveCheck example catalog captured live on 2026-10-25 under its own policy; the upstream policy hash is recorded as provenance and not used. `scripts/import-capture.js` is the exact derivation.
 
@@ -177,7 +185,7 @@ It does not prove:
 
 ## CI
 
-`.github/workflows/allowlist.yml` runs on push, pull request and manual dispatch: verify the tarball checksum, `npm ci`, `npm test`, the `valid-r2` fixture check (must pass), the wrong-decimals, superseded, revoked, unavailable and expired cases (must fail), reconstruction of every decision document, the browser build, and keeps every case's outputs as an artifact. A separate manual `live` job runs `npm run check` against the public nodes, reconstructs the live decision, and fails when the nodes do not answer. `.github/workflows/pages.yml` builds the demo with a `hosting.json` naming the built commit (`scripts/hosting-manifest.mjs`) and deploys it to GitHub Pages as an optional mirror; production is the custom-domain procedure in `docs/DEPLOYMENT.md`. The workflows become inspectable only after the repository is pushed to a remote.
+`.github/workflows/allowlist.yml` runs on push, pull request and manual dispatch: verify the tarball checksum, `npm ci`, `npm test`, the `valid-r2` fixture check (must pass), the wrong-decimals, superseded, revoked, unavailable and expired cases (must fail), reconstruction of every decision document, the release gate on the captured reads (permitted: release 1 written and read in another process; revoked: no release, the outcome names the reviewer's next action), the browser build, and keeps every case's outputs as an artifact. A separate manual `live` job runs `npm run check` against the public nodes, reconstructs the live decision, runs the live release gate and reads the release with fresh reads, and fails when the nodes do not answer. `.github/workflows/pages.yml` builds the demo with a `hosting.json` naming the built commit (`scripts/hosting-manifest.mjs`) and deploys it to GitHub Pages as an optional mirror; production is the custom-domain procedure in `docs/DEPLOYMENT.md`. The workflows become inspectable only after the repository is pushed to a remote.
 
 ## Licence
 
