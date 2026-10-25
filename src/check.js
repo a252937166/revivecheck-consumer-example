@@ -55,6 +55,7 @@ async function main() {
   console.log(`policy ${hash.slice(0, 12)}… binding ${run.binding?.bindingHash?.slice(0, 12) ?? '-'}… evaluation ${evaluation?.evaluationHash?.slice(0, 12) ?? '-'}…`);
   console.log(`evaluation: ${verdict}${entryNote ? `; entry: ${entryNote}` : ''}`);
   if (evaluation) console.log(`checkpoints: registry #${evaluation.checkpoint.registry?.number ?? '-'}, observation #${evaluation.checkpoint.observation?.number ?? '-'}, listing #${evaluation.checkpoint.listing?.number ?? '-'}; evaluated at ${evaluation.evaluatedAt}`);
+  if (evidence?.validity) console.log(evidence.validity.validUntil ? `permission ends: ${evidence.validity.validUntil} (${evidence.validity.limitedBy}); chain-state changes after the reads need a new check` : `permission ends: no deadline could be derived (missing ${evidence.validity.missing.join(', ')}); nothing is permitted`);
   console.log(`wrote ${path.join(values.out, 'allowlist.json')} (${ALLOWLIST_SCHEMA}), evaluation.json, inputs.json${evidence ? `, decision-evidence.json (${evidence.schema}, sha256 ${evidence.evidenceHash.slice(0, 12)}…)` : ''}`);
   process.exitCode = allowed ? 0 : 1;
 }

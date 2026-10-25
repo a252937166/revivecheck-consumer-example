@@ -1,6 +1,8 @@
-# Publish the Token eligibility demo (web/) to GitHub Pages on every push to main. The
-# page is a static build; every check it performs runs in the visitor's browser against
-# the public Portaldot V3 testnet nodes. Nothing here holds a key or signs anything.
+# Publish the Token eligibility demo (web/) to GitHub Pages on every push to main, as an
+# optional mirror. The production destination is the custom-domain server described in
+# docs/DEPLOYMENT.md. The page is a static build; every check it performs runs in the
+# visitor's browser against the public Portaldot V3 testnet nodes. Nothing here holds a
+# key or signs anything.
 name: pages
 
 on:
@@ -32,9 +34,7 @@ jobs:
       - name: Build the browser app under the repository path
         run: WEB_BASE="/${GITHUB_REPOSITORY#*/}/" npm run web:build
       - name: Record what was built
-        run: |
-          mkdir -p dist-web
-          node -e "const fs=require('fs');const crypto=require('crypto');const walk=(d,b=d)=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name,b):[(d+'/'+e.name).slice(b.length+1)]);const files=walk('dist-web').filter(f=>f!=='hosting.json').sort().map(f=>({path:f,bytes:fs.statSync('dist-web/'+f).size,sha256:crypto.createHash('sha256').update(fs.readFileSync('dist-web/'+f)).digest('hex')}));fs.writeFileSync('dist-web/hosting.json',JSON.stringify({schema:'revivecheck-consumer.hosting-manifest.v1',sourceCommit:process.env.GITHUB_SHA,repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID,builtAt:new Date().toISOString(),files},null,2)+'\n')"
+        run: node scripts/hosting-manifest.mjs --dist dist-web --commit "$GITHUB_SHA" --repository "$GITHUB_REPOSITORY" --run "$GITHUB_RUN_ID" --site "https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist-web

@@ -7,6 +7,9 @@
 // revivecheck/current, fed by this consumer's own evaluator), the LAST VERIFIED result in
 // this browser, the RECORDED snapshot committed with the repository, and RECORDED STATES
 // replayed from captured reads, which carry a persistent label and never enable anything.
+// A current permission ends at the deadline its own evidence sets (the report's age limit
+// or the earliest read's freshness limit); the page checks that deadline against the clock
+// on every render, at the deadline itself, and again inside the Continue handler.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import config from '../config/allowlist.json';
@@ -15,12 +18,12 @@ import validR2 from '../fixtures/valid-r2.json';
 import supersededR1 from '../fixtures/superseded-r1.json';
 import revokedR2 from '../fixtures/revoked-r2.json';
 import unavailable from '../fixtures/unavailable.json';
-import { initialDecision, beginCheck, settleCheck, failCheck, changeSelection, ageDecision, canAct, describeDecision, CURRENT_WORDS } from 'revivecheck/current';
+import { initialDecision, beginCheck, settleCheck, failCheck, changeSelection, ageDecision, checkPermission, describeDecision, CURRENT_WORDS, VALIDITY_LIMITS } from 'revivecheck/current';
 import { explainReason, evidenceExpiry, RENEWAL_STEPS, decisionSheetHtml } from 'revivecheck/decision';
 import { entryDecision, canonicalEntry } from 'revivecheck/entry';
 import { loadConfig, runFixture, runLive, decide } from '../src/evaluate.js';
 import { decisionEvidenceFor } from '../src/decision-evidence.js';
-import { selectorOptions, canProceed } from '../src/selector.js';
+import { selectorOptions, proceedNow } from '../src/selector.js';
 
 loadConfig(config, 'config/allowlist.json');
 const APP = 'https://revivecheck.axiqo.xyz/';
@@ -44,6 +47,7 @@ const span = (seconds) => !Number.isFinite(seconds) ? '—' : Math.abs(seconds) 
 const short = (value, keep = 10) => { const text = String(value ?? ''); return text.length > keep * 2 + 1 ? `${text.slice(0, keep)}…${text.slice(-keep)}` : text; };
 const download = (blob, filename) => { const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
 const STATE_TONE = { valid: 'pass', 'recheck-required': 'fail', expired: 'fail', unknown: 'unknown', checking: 'busy', 'not-checked': 'idle' };
+const LIMIT_WORDS = { report: "the report's age limit", observation: 'the network read', registry: 'the registry read', listing: 'the listing read' };
 
 function Copy({ value, label = 'Copy' }) {
   const [done, setDone] = useState(false);
@@ -89,14 +93,23 @@ export default function App() {
   const [chosen, setChosen] = useState('native');
   const [replay, setReplay] = useState(null);
   const [qr, setQr] = useState({});
-  const maxObservation = config.policy.evidence.maxObservationAgeSeconds;
-  useEffect(() => { setDecision((current) => changeSelection(current, selection)); }, [selection]);
+  const [now, setNow] = useState(() => new Date());
+  const [refused, setRefused] = useState('');
+  useEffect(() => { setDecision((current) => changeSelection(current, selection)); setRefused(''); }, [selection]);
+  // The clock the page renders with: every fifteen seconds, when the tab comes back, and at the deadline itself.
   useEffect(() => {
-    const tick = () => setDecision((current) => ageDecision(current, { now: new Date(), maxObservationAgeSeconds: maxObservation }));
+    const tick = () => { const at = new Date(); setNow(at); setDecision((current) => ageDecision(current, { now: at })); };
     const timer = setInterval(tick, 15_000);
     document.addEventListener('visibilitychange', tick);
     return () => { clearInterval(timer); document.removeEventListener('visibilitychange', tick); };
-  }, [maxObservation]);
+  }, []);
+  const lapsesAt = decision.current?.validity?.lapsesAt ?? null;
+  useEffect(() => {
+    const until = Date.parse(lapsesAt);
+    if (!Number.isFinite(until)) return undefined;
+    const timer = setTimeout(() => { const at = new Date(); setNow(at); setDecision((current) => ageDecision(current, { now: at })); }, Math.min(Math.max(0, until - Date.now() + 1), 2_147_483_647));
+    return () => clearTimeout(timer);
+  }, [lapsesAt]);
   useEffect(() => {
     if (decision.state !== 'checking') { setElapsed(0); return undefined; }
     const started = Date.parse(decision.startedAt);
@@ -125,7 +138,8 @@ export default function App() {
       })();
       const timeout = new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error(`No answer within ${TIMEOUT_MS / 1000} s. The public nodes can be slow; read again.`), { kind: 'timeout' })), TIMEOUT_MS));
       const { run, result } = await Promise.race([work, timeout]);
-      setDecision((current) => settleCheck(current, { request, selection, evaluation: result.evaluation, entry: entryDecision(entry, run.report), inputs: run.inputs, extra: { allowlist: result.allowlist, run, result } }));
+      setNow(new Date());
+      setDecision((current) => settleCheck(current, { request, selection, evaluation: result.evaluation, entry: entryDecision(entry, run.report), inputs: run.inputs, policy: config.policy, report: run.report, extra: { allowlist: result.allowlist, run, result } }));
     } catch (error) {
       setDecision((current) => failCheck(current, { request, selection, error, kind: error?.kind === 'timeout' ? 'timeout' : 'error' }));
     } finally { setPhase(''); }
@@ -144,11 +158,19 @@ export default function App() {
     setReplay({ id: item.id, title: item.title, note: item.note, run, result, entry: entryDecision(entry, run.report) });
   }
 
-  const described = describeDecision(decision, { subject: 'the configured entry' });
-  const options = selectorOptions(decision, { subject: config.entry });
-  const proceed = canProceed(options, chosen);
-  const tone = decision.stale ? 'fail' : canAct(decision) ? 'pass' : STATE_TONE[decision.state] || 'idle';
-  const current = decision.current && !decision.stale ? decision.current : null;
+  /** The business action checks the clock itself; the screen's state is not consulted. */
+  function continueWith() {
+    const check = proceedNow(decisionRef.current, { subject: config.entry, chosen, now: new Date() });
+    if (!check.ok) { setRefused(`Refused at ${when(new Date())}: ${check.reason}`); setNow(new Date()); setDecision((current) => ageDecision(current, { now: new Date() })); return; }
+    setRefused('');
+    alert(`Continuing with ${check.option.label}. Permission verified at ${new Date().toISOString()}${check.option.validUntil ? `, valid until ${check.option.validUntil}` : ''}. This example stops here: it is a token-admission demonstration, not an exchange.`);
+  }
+  const permission = checkPermission(decision, { now });
+  const described = describeDecision(decision, { subject: 'the configured entry', now });
+  const options = selectorOptions(decision, { subject: config.entry, now });
+  const proceed = options.find((option) => option.id === chosen)?.selectable === true;
+  const tone = permission.reason === 'lapsed' ? 'fail' : permission.allowed ? 'pass' : STATE_TONE[decision.state] || 'idle';
+  const current = decision.current && permission.reason !== 'lapsed' ? decision.current : null;
   const wrong = canonicalEntry(entry).decimals !== config.entry.decimals || entry.symbol !== config.entry.symbol || entry.name !== config.entry.name;
   const buttonWord = decision.state === 'checking' ? 'Checking…' : decision.error ? 'Retry the check' : decision.current ? 'Refresh status' : 'Check token';
 
@@ -180,6 +202,7 @@ export default function App() {
           <p className="verdict">{described.headline}</p>
           <p className="state"><span className={`pill ${tone}`}>Current: {described.word}</span>{current && <span className={`pill ${current.entry.match ? 'pass' : 'fail'}`}>{current.entry.match ? 'Entry equals the approved report' : `Entry differs: ${current.entry.mismatches.map((item) => item.field).join(', ')}`}</span>}</p>
           <p className="detail">{described.detail}</p>
+          {permission.allowed && <p className="deadline"><b>Permission ends {when(permission.validUntil)}</b> ({LIMIT_WORDS[permission.limitedBy]}; {span(permission.secondsLeft)} left at {when(now)}). Derived from the report's age and each read's time under this policy, checked against the clock on every render and again before the action.<br/><small>{VALIDITY_LIMITS.map((kind) => decision.current.validity.deadlines[kind] ? `${kind}: ${when(decision.current.validity.deadlines[kind].until)}` : `${kind}: not required`).join(' · ')}</small></p>}
           <div className="actions">
             <button type="button" className="primary" onClick={checkToken} disabled={decision.state === 'checking'}>{buttonWord}</button>
             <a className="button" href={REPORT_LINK} target="_blank" rel="noreferrer">Inspect evidence in ReviveCheck</a>
@@ -188,20 +211,21 @@ export default function App() {
           {decision.state === 'checking' && <p className="progress" role="status"><span className="spinner" aria-hidden="true"/>{phase || 'Working…'} {elapsed ? `· ${elapsed} s` : ''}{elapsed > 8 ? ' · the public node can take up to a minute on first contact' : ''}{elapsed > 60 ? ` · gives up at ${TIMEOUT_MS / 1000} s` : ''}</p>}
           {decision.error && <p className="error" role="alert"><b>Nothing was decided.</b> {decision.error.message} The recorded states below replay captured reads and are labelled as such.</p>}
           {current && <DecisionBody decision={current.extra.result} entry={current.entry} report={current.extra.run.report} label={<p className="label live">Live reads · {current.extra.run.source} · evaluated in this browser</p>}/>}
-          {decision.current && decision.stale && <p className="muted">The lapsed answer was <b>{CURRENT_WORDS[decision.current.status]}</b>, evaluated at {when(decision.current.evaluatedAt)}; it stays visible as what it was and permits nothing now.</p>}
+          {decision.current && permission.reason === 'lapsed' && <p className="muted">The lapsed answer was <b>{CURRENT_WORDS[decision.current.status]}</b>, evaluated at {when(decision.current.evaluatedAt)}; its permission ended at {when(decision.current.validity.validUntil ?? decision.current.validity.lapsesAt)}. It stays visible as what it was and permits nothing now.</p>}
           <div className="history">
-            <div><h3>Last verified in this browser</h3>{decision.lastVerified ? <p>{when(decision.lastVerified.evaluatedAt)} · registry #{decision.lastVerified.checkpoint?.registry?.number} · evaluation <Identity value={decision.lastVerified.evaluationHash} keep={8}/><br/><small>History: a past valid result is not a current permission.</small></p> : <p className="muted">No valid result yet in this browser.</p>}</div>
+            <div><h3>Last verified in this browser</h3>{decision.lastVerified ? <p>{when(decision.lastVerified.evaluatedAt)} · registry #{decision.lastVerified.checkpoint?.registry?.number} · evaluation <Identity value={decision.lastVerified.evaluationHash} keep={8}/> · permitted until {when(decision.lastVerified.validUntil)}<br/><small>History: a past valid result is not a current permission.</small></p> : <p className="muted">No valid result yet in this browser.</p>}</div>
             <div><h3>Recorded snapshot</h3><p><span className={`pill ${recordedRun.allow.length ? 'pass' : 'fail'}`}>{recordedRun.allow.length ? 'allowed' : 'denied'}</span> {when(recordedRun.generatedAt)} · {recordedRun.source} · evaluation <Identity value={recordedRun.evaluationHash} keep={8}/><br/><small>The one live run committed with this repository on 2026-10-25. Evidence of what held then, not a permission now.</small></p></div>
           </div>
         </section>
 
         <section className="block" aria-labelledby="selector-title">
           <h2 id="selector-title">3 · The business action: choose a token</h2>
-          <p className="muted">The selector reads the allow-list the evaluator produced. The configured token is selectable only while the current decision is valid and its entry equals the approved report. No flag is set by hand.</p>
+          <p className="muted">The selector reads the allow-list the evaluator produced. The configured token is selectable only while the current decision is valid, its entry equals the approved report and its deadline has not passed. Continue checks the clock again at the moment it is pressed; no flag is set by hand.</p>
           <div className="selector">
             <label>Pay with<select value={chosen} onChange={(event) => setChosen(event.target.value)}>{options.map((option) => <option key={option.id} value={option.id} disabled={!option.selectable}>{option.label}</option>)}</select></label>
-            <button type="button" className="primary" disabled={!proceed} onClick={() => alert(`Continuing with ${options.find((option) => option.id === chosen)?.label}. This example stops here: it is a token-admission demonstration, not an exchange.`)}>Continue</button>
+            <button type="button" className="primary" disabled={!proceed} onClick={continueWith}>Continue</button>
           </div>
+          {refused && <p className="error" role="alert"><b>Not continued.</b> {refused}</p>}
           <ul className="option-list">{options.map((option) => <li key={option.id}><span className={`pill ${option.selectable ? 'pass' : 'fail'}`}>{option.selectable ? 'selectable' : 'not selectable'}</span> <b>{option.label}</b><br/><small>{option.reason}</small></li>)}</ul>
         </section>
 

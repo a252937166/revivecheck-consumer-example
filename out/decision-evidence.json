@@ -1,6 +1,6 @@
 {
   "schema": "revivecheck.decision-evidence.v1",
-  "generatedAt": "2026-10-25T13:36:28.852Z",
+  "generatedAt": "2026-10-25T16:17:15.823Z",
   "producer": {
     "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
     "kind": "consumer",
@@ -41,12 +41,12 @@
   "identity": {
     "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
     "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
-    "bindingId": "1854b926-7c25-4631-afad-2214651ab585",
-    "bindingHash": "7831d5df9adcd092b86b21039de5540e02c8ce307ef37b0ced669fedc29ffd85",
+    "bindingId": "9c352661-d019-4572-a79e-17abe2df1967",
+    "bindingHash": "140205e71f5c456fab3d4d9c8553560728ced56396286a644f21c34e0b6f68b9",
     "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
     "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
     "revision": "2",
-    "evaluationHash": "4c79e8d6807a401565d3d542650d76c7d7e447c60367b9c11b79ab16f078288b",
+    "evaluationHash": "d99473fa7ccf8365db019955e7bcac8ca74e349d5d556829b5e4d63037a667b6",
     "entryIdentity": "3bbb9cc2ff10f7ea08b51556ceab5fd87b923191682c1c3758a5aaace105138c"
   },
   "release": {
@@ -77,29 +77,56 @@
     "completedAt": "2026-10-25T09:29:17.646Z",
     "maxAgeSeconds": 604800,
     "expiresAt": "2026-11-01T09:29:17.646Z",
-    "secondsLeftAtEvaluation": 589969
+    "secondsLeftAtEvaluation": 580322
   },
   "observation": {
     "maxObservationAgeSeconds": 900,
-    "observedAt": "2026-10-25T13:36:24.484Z",
+    "observedAt": "2026-10-25T16:17:11.269Z",
     "runtime": "portaldot-v3/3002"
   },
-  "evaluatedAt": "2026-10-25T13:36:28.849Z",
+  "validity": {
+    "validUntil": "2026-10-25T16:32:11.269Z",
+    "limitedBy": "observation",
+    "deadlines": {
+      "report": {
+        "at": "2026-10-25T09:29:17.646Z",
+        "limitSeconds": 604800,
+        "until": "2026-11-01T09:29:17.646Z"
+      },
+      "observation": {
+        "at": "2026-10-25T16:17:11.269Z",
+        "limitSeconds": 900,
+        "until": "2026-10-25T16:32:11.269Z"
+      },
+      "registry": {
+        "at": "2026-10-25T16:17:11.810Z",
+        "limitSeconds": 900,
+        "until": "2026-10-25T16:32:11.810Z"
+      },
+      "listing": {
+        "at": "2026-10-25T16:17:14.286Z",
+        "limitSeconds": 900,
+        "until": "2026-10-25T16:32:14.286Z"
+      }
+    },
+    "missing": []
+  },
+  "evaluatedAt": "2026-10-25T16:17:15.820Z",
   "checkpoints": {
     "registry": {
-      "number": "189599",
-      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+      "number": "191199",
+      "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+      "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
     },
     "observation": {
-      "number": "189599",
-      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
+      "number": "191199",
+      "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+      "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf"
     },
     "listing": {
-      "number": "189599",
-      "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-      "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+      "number": "191199",
+      "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+      "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
     },
     "report": {
       "number": "187136",
@@ -111,9 +138,9 @@
     "report": "https://revivecheck.axiqo.xyz/?report=1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51#/review",
     "storage": "https://scanner-testnet-v3.portaldot.dev/#/extrinsics/0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
     "reportBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
-    "registryBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-    "listingBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-    "observationBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
+    "registryBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+    "listingBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+    "observationBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf"
   },
   "qr": [
     {
@@ -173,7 +200,7 @@
   },
   "binding": {
     "schema": "revivecheck.binding.v1",
-    "id": "1854b926-7c25-4631-afad-2214651ab585",
+    "id": "9c352661-d019-4572-a79e-17abe2df1967",
     "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
     "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
     "subject": "0x00001e6100000000000000000000000000010000",
@@ -183,13 +210,13 @@
     "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
     "revision": "2",
     "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
-    "boundAt": "2026-10-25T13:36:21.171Z",
+    "boundAt": "2026-10-25T16:17:06.939Z",
     "note": "Allow-list binding for pusd-catalog-v2: report 1faef921a720… on revision 2.",
     "storage": {
       "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
       "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
     },
-    "bindingHash": "7831d5df9adcd092b86b21039de5540e02c8ce307ef37b0ced669fedc29ffd85"
+    "bindingHash": "140205e71f5c456fab3d4d9c8553560728ced56396286a644f21c34e0b6f68b9"
   },
   "report": {
     "id": "116a3103-a3c6-4cef-a8d2-787af516dbed",
@@ -421,7 +448,7 @@
     "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
     "subject": "0x00001e6100000000000000000000000000010000",
     "subjectKind": "native-asset",
-    "bindingId": "1854b926-7c25-4631-afad-2214651ab585",
+    "bindingId": "9c352661-d019-4572-a79e-17abe2df1967",
     "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
     "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
     "revision": "2",
@@ -480,7 +507,7 @@
       {
         "id": "observation.fresh",
         "status": "passed",
-        "observed": "4 s old",
+        "observed": "5 s old",
         "expected": "at most 900 s old"
       },
       {
@@ -498,7 +525,7 @@
       {
         "id": "evidence.age",
         "status": "passed",
-        "observed": "14831 s since the report",
+        "observed": "24478 s since the report",
         "expected": "at most 604800 s old, with at most 60 s clock skew"
       },
       {
@@ -510,7 +537,7 @@
       {
         "id": "registry.provenance",
         "status": "passed",
-        "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927, 2026-10-25T13:36:25.004Z",
+        "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927, 2026-10-25T16:17:11.810Z",
         "expected": "the dated registry contract and release"
       },
       {
@@ -570,7 +597,7 @@
       {
         "id": "consumer.provenance",
         "status": "passed",
-        "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000, 2026-10-25T13:36:27.390Z",
+        "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000, 2026-10-25T16:17:14.286Z",
         "expected": "the dated consumer contract and token"
       },
       {
@@ -582,13 +609,13 @@
       {
         "id": "consumer.fresh",
         "status": "passed",
-        "observed": "1 s old",
+        "observed": "2 s old",
         "expected": "at most 900 s old"
       },
       {
         "id": "consumer.identity",
         "status": "passed",
-        "observed": "identity at 0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
+        "observed": "identity at 0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
         "expected": "consumer identity through both interfaces at the listing checkpoint"
       },
       {
@@ -642,27 +669,27 @@
     ],
     "checkpoint": {
       "registry": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
       },
       "observation": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf"
       },
       "listing": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
       }
     },
     "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
     "simulation": false,
-    "evaluatedAt": "2026-10-25T13:36:28.849Z",
+    "evaluatedAt": "2026-10-25T16:17:15.820Z",
     "nextAction": "Enable the subject under this policy. Validity is a point-in-time result: evaluate again before each use.",
     "caveat": "A valid result means every policy condition held at the recorded checkpoints and time. It is not a guarantee of future state, a security audit or independent review; the trusted reviewer set is the policy author's choice.",
-    "evaluationHash": "4c79e8d6807a401565d3d542650d76c7d7e447c60367b9c11b79ab16f078288b"
+    "evaluationHash": "d99473fa7ccf8365db019955e7bcac8ca74e349d5d556829b5e4d63037a667b6"
   },
   "inputs": {
     "observation": {
@@ -675,27 +702,27 @@
       "genesisMatches": true,
       "runtime": "portaldot-v3/3002",
       "finalized": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf"
       },
       "evm": {
         "rpcUrl": "https://test-evm-rpc-v3.portaldot.dev",
         "chainId": 420420777,
-        "finalizedHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+        "finalizedHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
       },
       "explorer": "https://scanner-testnet-v3.portaldot.dev",
-      "observedAt": "2026-10-25T13:36:24.484Z"
+      "observedAt": "2026-10-25T16:17:11.269Z"
     },
     "registry": {
       "address": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
       "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
       "block": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
       },
-      "observedAt": "2026-10-25T13:36:25.004Z",
+      "observedAt": "2026-10-25T16:17:11.810Z",
       "release": {
         "exists": true,
         "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
@@ -742,9 +769,9 @@
       "token": "0x00001e6100000000000000000000000000010000",
       "list": "0xedaf8a25bb583ad164a94191b762414277198df9",
       "block": {
-        "number": "189599",
-        "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-        "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+        "number": "191199",
+        "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+        "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
       },
       "listed": true,
       "entry": {
@@ -780,9 +807,9 @@
       "identity": {
         "address": "0xedaf8a25bb583ad164a94191b762414277198df9",
         "block": {
-          "number": "189599",
-          "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-          "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+          "number": "191199",
+          "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+          "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
         },
         "evm": {
           "version": "2",
@@ -813,11 +840,11 @@
           }
         },
         "runtimeCodeHash": "0xf43602cb2e6593f029d9ce84e9e18c38d36079689e0fa5a2251d0be6c360074d",
-        "observedAt": "2026-10-25T13:36:27.390Z",
+        "observedAt": "2026-10-25T16:17:14.286Z",
         "version": 2,
         "versionSource": "on-chain-version-getter"
       },
-      "observedAt": "2026-10-25T13:36:27.390Z"
+      "observedAt": "2026-10-25T16:17:14.286Z"
     },
     "evidence": {
       "verified": true,
@@ -840,7 +867,7 @@
       "schema": "revivecheck-consumer.allowlist.v1",
       "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
       "source": "live:portaldot-v3-testnet",
-      "generatedAt": "2026-10-25T13:36:28.849Z",
+      "generatedAt": "2026-10-25T16:17:15.820Z",
       "network": {
         "key": "testnet",
         "chainId": 420420777,
@@ -870,22 +897,22 @@
         }
       ],
       "denied": [],
-      "evaluatedAt": "2026-10-25T13:36:28.849Z",
+      "evaluatedAt": "2026-10-25T16:17:15.820Z",
       "checkpoints": {
         "registry": {
-          "number": "189599",
-          "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-          "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+          "number": "191199",
+          "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+          "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
         },
         "observation": {
-          "number": "189599",
-          "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-          "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a"
+          "number": "191199",
+          "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+          "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf"
         },
         "listing": {
-          "number": "189599",
-          "nativeHash": "0xf7cdac1fb9bc77c0e7c2593fa5125050733105bca1a3bf1e3d1d8da5382d869a",
-          "evmHash": "0xd146f10f13bac3a47ef36f4387187974e8166c46bfc8e6ec92dc79fa38a2b65e"
+          "number": "191199",
+          "nativeHash": "0x9e3385e19228030dee90e44779de60b060e31b056cf1e008172e38df6905bbaf",
+          "evmHash": "0x22eb76e59c27351c56539b3d3a30073782fb2880e28211e12ebc2c58aab517de"
         },
         "storage": {
           "blockNumber": "187145",
@@ -901,11 +928,11 @@
       },
       "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
       "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
-      "evaluationHash": "4c79e8d6807a401565d3d542650d76c7d7e447c60367b9c11b79ab16f078288b",
+      "evaluationHash": "d99473fa7ccf8365db019955e7bcac8ca74e349d5d556829b5e4d63037a667b6",
       "evaluationStatus": "valid",
       "binding": {
-        "id": "1854b926-7c25-4631-afad-2214651ab585",
-        "bindingHash": "7831d5df9adcd092b86b21039de5540e02c8ce307ef37b0ced669fedc29ffd85",
+        "id": "9c352661-d019-4572-a79e-17abe2df1967",
+        "bindingHash": "140205e71f5c456fab3d4d9c8553560728ced56396286a644f21c34e0b6f68b9",
         "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
         "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
         "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
@@ -915,7 +942,7 @@
           "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
         },
         "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
-        "boundAt": "2026-10-25T13:36:21.171Z"
+        "boundAt": "2026-10-25T16:17:06.939Z"
       },
       "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
       "roles": {
@@ -937,16 +964,16 @@
     "attempts": [
       {
         "attempt": 1,
-        "startedAt": "2026-10-25T13:36:11.702Z",
-        "retrieveEvidenceMs": 9469,
-        "collectPolicyInputsMs": 7676,
+        "startedAt": "2026-10-25T16:16:56.974Z",
+        "retrieveEvidenceMs": 9965,
+        "collectPolicyInputsMs": 8877,
         "ok": true,
         "failedReads": [],
-        "ms": 17147
+        "ms": 18845
       }
     ],
     "fixture": null
   },
   "caveat": "Integrity of this document shows that the decision follows from these exact artifacts at the recorded checkpoints and time. It is not proof of current eligibility, of the reviewer's identity beyond the policy's trust basis, or of an independent audit. A self-declared review receipt or a signed remark is not a ReleaseRegistry approval.",
-  "evidenceHash": "add90c6cf2143338d421be6c48a6aab620189bcff34452db9895486c2ca249cb"
+  "evidenceHash": "00345d31c7b461da0ed9a311bd1d0f88d9ac598ae7508619fd9e94a1858a4534"
 }

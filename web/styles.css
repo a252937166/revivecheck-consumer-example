@@ -66,6 +66,8 @@ button.ghost:hover:not(:disabled) { background: transparent; text-decoration: un
 .pill.busy, .pill.idle { background: var(--accent-soft); color: var(--accent-2); border-color: color-mix(in srgb, var(--accent) 30%, white); }
 .pill.idle { background: var(--bg-2); color: var(--ink-3); border-color: var(--line-2); }
 .detail { color: var(--ink-2); max-width: 70ch; }
+.deadline { color: var(--ink-2); max-width: 76ch; font-size: .92rem; margin: .4rem 0 .2rem; }
+.deadline small { color: var(--ink-3); }
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 .progress { display: flex; align-items: center; gap: .6rem; color: var(--ink-2); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 20%, white); border-radius: 8px; padding: .6rem .8rem; }
 .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--accent) 30%, white); border-top-color: var(--accent); animation: spin .8s linear infinite; flex: none; }

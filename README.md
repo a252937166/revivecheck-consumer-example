@@ -18,32 +18,33 @@ Everything is read-only. No key is held, nothing is signed, no transaction is se
 3. **Inspect evidence in ReviveCheck**: opens the exact bound report in the ReviveCheck App (`https://revivecheck.axiqo.xyz/?report=1faef921…#/review`), where its fingerprint is verified and it can be replayed at its pinned block. The same report hash is visible on both sides.
 4. Correct the entry to the approved values. The decision resets to "Not checked yet"; a corrected field causes a new evaluation.
 5. **Refresh status**: a fresh evaluation under this consumer's policy returns "Available now".
-6. **Choose a token**: the selector offers pUSD only while the current decision is valid and the entry equals the approved report; the option is built from the allow-list the evaluator produced, not from a flag. "Continue" is enabled only on a selectable option.
+6. **Choose a token**: the selector offers pUSD only while the current decision is valid, the entry equals the approved report and the permission's deadline has not passed; the option is built from the allow-list the evaluator produced, not from a flag. "Continue" is enabled only on a selectable option, and checks the clock again at the moment it is pressed (`proceedNow`): a press between timer ticks after the deadline is refused.
 7. **Recorded states**: reads captured on the testnet on 2026-10-25 (approved and listed, revision superseded, approval revoked, node unavailable, evidence expired by the policy clock) replayed through the same logic with a persistent "RECORDED" label. A recorded state never enables the selector.
 8. **Download decision evidence**: the `revivecheck.decision-evidence.v1` document (JSON) and a human-readable sheet (HTML with QR codes), which `node src/reconstruct.js <file>` re-derives offline.
 
-The current decision has explicit states (not checked, checking, valid, recheck required, expired, unknown) from `revivecheck/current`: a refresh withdraws the permission until a fresh result arrives; a thrown error or a timeout (90 s) is unknown; a result older than the policy's observation limit (900 s) lapses, also when the tab comes back; the last verified result and the recorded snapshot are shown as history. Nothing is stored in the browser.
+The current decision has explicit states (not checked, checking, valid, recheck required, expired, unknown) from `revivecheck/current`: a refresh withdraws the permission until a fresh result arrives; a thrown error or a timeout (90 s) is unknown; the last verified result and the recorded snapshot are shown as history. A current permission ends at the deadline its own evidence sets, derived by the library from the bound report's completion time plus the policy's age limit (604800 s) and each read's observation time plus the freshness limit (900 s), the earliest of which wins; the page shows that deadline and which limit set it, re-reads the clock every fifteen seconds, when the tab comes back and at the deadline itself, and the Continue handler checks it once more. A result whose deadline cannot be derived (a missing or invalid timestamp) permits nothing. None of this detects a change on the chain after the last read: that takes a new check. Nothing is stored in the browser.
 
-Run it locally with `npm run web:dev` (http://127.0.0.1:4190/) or build it with `npm run web:build` and serve `dist-web/`. `.github/workflows/pages.yml` publishes it to GitHub Pages on every push to `main` once the repository has a public remote; at the time of writing it has none, so no public URL exists yet.
+Run it locally with `npm run web:dev` (http://127.0.0.1:4190/) or build it with `npm run web:build` and serve `dist-web/`. The production destination is the custom-domain server that hosts the ReviveCheck App, by the procedure in `docs/DEPLOYMENT.md` (its own host name `demo.revivecheck.axiqo.xyz`, or `/demo/` under the App), with a `hosting.json` written after the build that names the served commit; `.github/workflows/pages.yml` is an optional GitHub Pages mirror. At the time of writing the repository has no public remote and no deployment has been made, so no public URL exists yet.
 
 ## What is in the box
 
 | Path | What |
 | --- | --- |
-| `vendor/revivecheck-0.4.0.tgz`, `vendor/CHECKSUMS.txt` | the package artifact produced with `npm pack` from the ReviveCheck checkout, with its SHA-256 |
-| `package.json`, `package-lock.json` | depends on `"revivecheck": "file:vendor/revivecheck-0.4.0.tgz"`; Node 22; Vite, React and `qrcode` only for the browser build |
+| `vendor/revivecheck-0.4.1.tgz`, `vendor/CHECKSUMS.txt` | the package artifact produced with `npm pack` from the ReviveCheck checkout, with its SHA-256; the previous 0.4.0 artifact is kept beside it as history |
+| `package.json`, `package-lock.json` | depends on `"revivecheck": "file:vendor/revivecheck-0.4.1.tgz"` (the lockfile carries the tarball's integrity); Node 22; Vite, React and `qrcode` only for the browser build |
 | `config/allowlist.json` | the allow-list configuration: the policy, the release it relies on, the entry the operator intends to publish, and who controls each role |
 | `src/evaluate.js` | the evaluator shared by the command line and the browser: live (`runLive`) or from a fixture (`runFixture`), then `decide` |
 | `src/check.js` | the command: live or offline (`--fixture`), writes `allowlist.json`, `evaluation.json`, `inputs.json`, `decision-evidence.json` |
 | `src/allowlist.js` | the allow-list rule, derived from the approved report; this consumer's own implementation of the published-entry invariant on the public interfaces |
-| `src/selector.js` | the token selector's options, derived from the allow-list output and the current decision |
+| `src/selector.js` | the token selector's options, derived from the allow-list output and the current decision at a given clock; `proceedNow` is the Continue handler's own check |
 | `src/decision-evidence.js`, `src/reconstruct.js` | the portable decision document and the second-reader command that re-derives it |
 | `web/` | the Token eligibility demo (React, Vite) |
 | `fixtures/*.json` | raw reads captured live on the testnet, labelled with provenance, for the refusal cases |
 | `scripts/import-capture.js` | how the fixtures were derived from the upstream captures |
+| `scripts/hosting-manifest.mjs`, `docs/DEPLOYMENT.md` | the hosting manifest written beside a built demo, and the custom-domain hosting procedure with its Nginx placement options |
 | `test/*.test.js` | the refusal cases, the evaluator, the selector and the decision evidence, run with `node --test` |
-| `.github/workflows/allowlist.yml`, `pages.yml` | CI: offline tests and fixture checks with reconstruction and per-case artifacts, a manual live job; the Pages deployment |
-| `out/` | the outputs of the live run recorded on 2026-10-25 at 13:36 UTC |
+| `.github/workflows/allowlist.yml`, `pages.yml` | CI: offline tests and fixture checks with reconstruction and per-case artifacts, a manual live job; the optional Pages mirror |
+| `out/` | the outputs of the live run recorded on 2026-10-25 at 16:17 UTC against the 0.4.1 artifact |
 | `ONBOARDING_LOG.md` | the log of the clean-environment runs, including every point where the author's source was read |
 
 ## Install from scratch
@@ -53,7 +54,7 @@ git clone <this repository> revivecheck-consumer-example
 cd revivecheck-consumer-example
 node -v                                           # v22 or later
 (cd vendor && shasum -a 256 -c CHECKSUMS.txt)     # Linux: cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -
-npm ci                                            # installs revivecheck from vendor/revivecheck-0.4.0.tgz
+npm ci                                            # installs revivecheck from vendor/revivecheck-0.4.1.tgz
 npm test                                          # offline: refusal cases, evaluator, selector, decision evidence
 ```
 
@@ -61,13 +62,13 @@ The package artifact:
 
 | | |
 | --- | --- |
-| File | `vendor/revivecheck-0.4.0.tgz` |
-| SHA-256 | `aa48acddc3c7d779cfc2849c7c5331c09802db24d50f6b28ddc0702ea87fcf35` |
-| Size | 119,138 bytes packed, 44 files |
-| Produced | 2026-10-25 with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout at commit `6b7402f` (branch `redesign/custody-record`, clean working tree); upstream verified the same artifact from an empty project (`artifacts/package-verification-2026-10-25.json` there) |
+| File | `vendor/revivecheck-0.4.1.tgz` |
+| SHA-256 | `5a0003ae4d4603141210df8d2638dc2f31f2a91019c9e6e4c2078555a33a868b` |
+| Size | 122,445 bytes packed, 44 files |
+| Produced | 2026-10-25 with `npm pack --pack-destination <this repo>/vendor` inside the ReviveCheck checkout at commit `2e1673d` (branch `redesign/custody-record`, clean working tree); upstream verified the same bytes from an empty project (`artifacts/package-verification-2026-10-25-r2.json` there: 204 packages, 170.6 MB, 17.6 s). The 0.4.0 artifact (`aa48acdd…fcf35`, commit `6b7402f`) is kept as history |
 | Contents | `lib/` (including `entry.js`, `current.js`, `decision.js`), `contracts/*.sol`, `contracts/deployed/v1/`, `mcp/`, `scripts/revivecheck.js`, `public/lifecycle/reference.json` and `registry.json` (the MCP resources), `docs/API.md`, `docs/POLICY.md`, `docs/INTEGRATION.md`, `docs/LIBRARY.md`, `README.md`, `LICENSE`, `package.json` |
 
-Upstream now declares its web and server dependencies as development dependencies, so a headless consumer installs the library alone: upstream's own verification from an empty project measured 204 packages and 170.6 MB (`artifacts/package-verification-2026-10-25.json` in the ReviveCheck repository), against 233 packages and 388 MB for the 0.3.0 artifact. This repository installs 317 packages (247 MB) because it also carries Vite, React and `qrcode` for the browser build.
+Upstream declares its web and server dependencies as development dependencies, so a headless consumer installs the library alone: upstream's own verification from an empty project measured 204 packages and 170.6 MB, against 233 packages and 388 MB for the 0.3.0 artifact. This repository installs 267 packages (248 MB) with `npm ci` because it also carries Vite, React and `qrcode` for the browser build.
 
 To rebuild the artifact yourself: check out the ReviveCheck repository at the state you want, run `npm pack --pack-destination <path>` there, and compare the SHA-256.
 
@@ -151,9 +152,9 @@ The fixtures reuse raw reads that the upstream ReviveCheck example catalog captu
 
 ## The live runs recorded here
 
-`out/` holds the live run of 2026-10-25T13:36:28.849Z (`npm run check`, 20.8 s wall clock, first attempt): **ALLOWED**, evaluation `valid` at finalized block #189599 for the registry read, the network observation and the listing; report `1faef921…` retrieved from extrinsic `0x80d46a86…feb3` in block #187145; policy hash `795942d6…f8c3`; `decision-evidence.json` SHA-256 `add90c6c…` reconstructs consistently. The earlier live run of 09:59:21Z (block #187437, against the 0.3.0 artifact) is recorded in `ONBOARDING_LOG.md`.
+`out/` holds the live run of 2026-10-25T16:17:15.820Z against the 0.4.1 artifact (`npm run check`, first attempt, report retrieved in 10.0 s): **ALLOWED**, evaluation `valid` at finalized block #191199 for the registry read, the network observation and the listing; report `1faef921…` retrieved from extrinsic `0x80d46a86…feb3` in block #187145; policy hash `795942d6…f8c3`; permission ending at 2026-10-25T16:32:11.269Z (the network read plus 900 s); `decision-evidence.json` SHA-256 `00345d31…` reconstructs consistently, deadline included. The earlier live runs (13:36:28Z at #189599 against the 0.4.0 artifact, 09:59:21Z at #187437 against 0.3.0) are recorded in `ONBOARDING_LOG.md`.
 
-In the browser the same evaluator ran twice in the recorded session of 2026-10-25: withheld with the wrong entry at #189591, allowed with the corrected entry at #189595.
+In the browser the same evaluator ran in the recorded sessions of 2026-10-25: withheld with the wrong entry at #189591 and allowed with the corrected entry at #189595 (0.4.0); and, against 0.4.1, allowed with a stated deadline, then refused by the Continue handler after a sixteen-minute clock jump that no timer had seen (`ONBOARDING_LOG.md`).
 
 ## Expiry
 
@@ -176,7 +177,7 @@ It does not prove:
 
 ## CI
 
-`.github/workflows/allowlist.yml` runs on push, pull request and manual dispatch: verify the tarball checksum, `npm ci`, `npm test`, the `valid-r2` fixture check (must pass), the wrong-decimals, superseded, revoked, unavailable and expired cases (must fail), reconstruction of every decision document, the browser build, and keeps every case's outputs as an artifact. A separate manual `live` job runs `npm run check` against the public nodes, reconstructs the live decision, and fails when the nodes do not answer. `.github/workflows/pages.yml` builds and deploys the demo to GitHub Pages with a `hosting.json` naming the built commit. The workflows become inspectable only after the repository is pushed to a remote.
+`.github/workflows/allowlist.yml` runs on push, pull request and manual dispatch: verify the tarball checksum, `npm ci`, `npm test`, the `valid-r2` fixture check (must pass), the wrong-decimals, superseded, revoked, unavailable and expired cases (must fail), reconstruction of every decision document, the browser build, and keeps every case's outputs as an artifact. A separate manual `live` job runs `npm run check` against the public nodes, reconstructs the live decision, and fails when the nodes do not answer. `.github/workflows/pages.yml` builds the demo with a `hosting.json` naming the built commit (`scripts/hosting-manifest.mjs`) and deploys it to GitHub Pages as an optional mirror; production is the custom-domain procedure in `docs/DEPLOYMENT.md`. The workflows become inspectable only after the repository is pushed to a remote.
 
 ## Licence
 
