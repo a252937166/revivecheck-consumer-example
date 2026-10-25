@@ -1,0 +1,18 @@
+{
+  "schema": "revivecheck.release-gate-outcome.v1",
+  "status": "permitted",
+  "exitCode": 0,
+  "permitted": true,
+  "generatedAt": "2026-10-25T18:50:21.356Z",
+  "subject": "0x00001e6100000000000000000000000000010000",
+  "reasons": [],
+  "nextAction": "Publish release 1 (329a8dbbcbd4…); readers apply the deadline 2026-10-25T19:05:17.293Z and evaluate again before use.",
+  "diagnostics": [],
+  "evidenceHash": "a3a30436f14849fbafe46ff4fbeabccb01a05ecc4960ebed3c62a188ea11ef64",
+  "release": {
+    "version": 1,
+    "releaseHash": "329a8dbbcbd49982ba6da22c7806c011f1ef52e60c5dda0527cc7a48ec03f986",
+    "validUntil": "2026-10-25T19:05:17.293Z",
+    "entries": 1
+  }
+}

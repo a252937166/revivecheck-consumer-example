@@ -1,9 +1,9 @@
 {
   "name": "revivecheck-consumer-example",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "A token eligibility demo: a DEX allow-list that enables a token only while its own ReviveCheck policy evaluation is valid and the entry equals the approved report. Installs ReviveCheck from a packed tarball; a second consumer outside the ReviveCheck source tree, with a command line and a public browser interface.",
+  "description": "A token eligibility demo: a DEX allow-list that enables a token only while its own ReviveCheck policy evaluation is valid and the entry equals the approved report, and prepares a versioned token-catalog release from the eligible entry that a separate reader consumes. Installs ReviveCheck from a packed tarball; a second consumer outside the ReviveCheck source tree, with a command line and a public browser interface.",
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -12,6 +12,10 @@
     "check": "node src/check.js",
     "check:fixture": "node src/check.js --fixture fixtures/valid-r2.json",
     "reconstruct": "node src/reconstruct.js",
+    "release": "revivecheck-catalog prepare --config config/allowlist.json --out out/releases",
+    "release:fixture": "revivecheck-catalog prepare --config config/allowlist.json --out out/releases --fixture fixtures/valid-r2.json",
+    "release:read": "revivecheck-catalog read",
+    "release:compare": "revivecheck-catalog compare",
     "test": "node --test test/*.test.js",
     "web:dev": "vite",
     "web:build": "vite build",
@@ -26,6 +30,6 @@
     "vite": "^7.1.12"
   },
   "dependencies": {
-    "revivecheck": "file:vendor/revivecheck-0.4.1.tgz"
+    "revivecheck": "file:vendor/revivecheck-0.5.0.tgz"
   }
 }

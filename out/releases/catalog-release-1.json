@@ -1,0 +1,968 @@
+{
+  "schema": "revivecheck.catalog-release.v1",
+  "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
+  "version": 1,
+  "generatedAt": "2026-10-25T18:50:21.356Z",
+  "producer": {
+    "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
+    "kind": "release-gate",
+    "control": "this repository's check command, run by an AI agent on the author's machine; it reads the chain and signs nothing",
+    "source": "live:portaldot-v3-testnet"
+  },
+  "network": {
+    "key": "testnet",
+    "chainId": 420420777,
+    "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+    "name": "Portaldot V3 Testnet"
+  },
+  "summary": {
+    "entries": 1,
+    "withheld": 0,
+    "decisions": 1
+  },
+  "entries": [
+    {
+      "chainId": 420420777,
+      "address": "0x00001e6100000000000000000000000000010000",
+      "symbol": "pUSD",
+      "name": "Portaldot USD (test)",
+      "decimals": 6,
+      "assetId": "7777",
+      "source": "approved-report",
+      "identity": "3bbb9cc2ff10f7ea08b51556ceab5fd87b923191682c1c3758a5aaace105138c",
+      "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+      "reportCheckpoint": {
+        "number": "187136",
+        "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+        "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+      },
+      "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+      "revision": "2",
+      "releaseLabel": "pusd-catalog-v2",
+      "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+      "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+      "bindingHash": "7af4639b394de3e66eab001727dc801ed9d8efa2c5a9453500e93dcbff5f3d05",
+      "evaluationHash": "82df548f87c4bcb0f3b07086e414c01741b08d3dfe90e269c74378d44385506e",
+      "evidenceHash": "a3a30436f14849fbafe46ff4fbeabccb01a05ecc4960ebed3c62a188ea11ef64",
+      "trustedReviewers": [
+        "0x95db300103ec8b45884b13ed85230fbf02114065"
+      ],
+      "evaluatedAt": "2026-10-25T18:50:21.356Z",
+      "checkpoints": {
+        "registry": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+        },
+        "observation": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9"
+        },
+        "listing": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+        },
+        "report": {
+          "number": "187136",
+          "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+          "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+        }
+      },
+      "validUntil": "2026-10-25T19:05:17.293Z",
+      "limitedBy": "observation"
+    }
+  ],
+  "withheld": [],
+  "validity": {
+    "validUntil": "2026-10-25T19:05:17.293Z",
+    "limitedBy": "observation",
+    "note": "The earliest permission deadline among the included entries. A reader applies each entry's own deadline, and re-evaluates on fresh reads before use."
+  },
+  "previousReleaseHash": null,
+  "previousVersion": null,
+  "evidence": [
+    {
+      "schema": "revivecheck.decision-evidence.v1",
+      "generatedAt": "2026-10-25T18:50:21.356Z",
+      "producer": {
+        "name": "Example DEX allow-list (pUSD, Portaldot V3 testnet)",
+        "kind": "release-gate",
+        "control": "this repository's check command, run by an AI agent on the author's machine; it reads the chain and signs nothing",
+        "source": "live:portaldot-v3-testnet"
+      },
+      "outcome": {
+        "available": true,
+        "status": "valid",
+        "reasons": [],
+        "explanations": [],
+        "nextAction": "Enable the subject under this policy. Validity is a point-in-time result: evaluate again before each use."
+      },
+      "entry": {
+        "configured": {
+          "chainId": 420420777,
+          "address": "0x00001e6100000000000000000000000000010000",
+          "symbol": "pUSD",
+          "name": "Portaldot USD (test)",
+          "decimals": 6,
+          "assetId": "7777"
+        },
+        "approved": {
+          "chainId": 420420777,
+          "address": "0x00001e6100000000000000000000000000010000",
+          "symbol": "pUSD",
+          "name": "Portaldot USD (test)",
+          "decimals": 6,
+          "assetId": "7777"
+        },
+        "match": true,
+        "mismatches": [],
+        "reason": null,
+        "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+        "identity": "3bbb9cc2ff10f7ea08b51556ceab5fd87b923191682c1c3758a5aaace105138c",
+        "reasons": []
+      },
+      "identity": {
+        "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+        "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+        "bindingId": "20e528d6-62cb-481f-be3b-d0063f9d7dc0",
+        "bindingHash": "7af4639b394de3e66eab001727dc801ed9d8efa2c5a9453500e93dcbff5f3d05",
+        "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+        "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+        "revision": "2",
+        "evaluationHash": "82df548f87c4bcb0f3b07086e414c01741b08d3dfe90e269c74378d44385506e",
+        "entryIdentity": "3bbb9cc2ff10f7ea08b51556ceab5fd87b923191682c1c3758a5aaace105138c"
+      },
+      "release": {
+        "label": "pusd-catalog-v2",
+        "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+        "registry": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+        "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+        "revision": "2",
+        "release": "v1.0.1"
+      },
+      "reviewerTrust": {
+        "trusted": [
+          "0x95db300103ec8b45884b13ed85230fbf02114065"
+        ],
+        "threshold": 1,
+        "basis": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control."
+      },
+      "storage": {
+        "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+        "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868",
+        "blockNumber": "187145",
+        "extrinsicIndex": 1,
+        "publisher": "5GH8LpSTf6sp31FeacbFE99E3b9NQb5E7xWHeBL8XqW3YhTt",
+        "contentHash": "0xcae9e2a7bd13559a6c3c5536dd63c2dedcbb4dfc2d10847fb21138b8b6050f05",
+        "verified": true
+      },
+      "evidenceAge": {
+        "completedAt": "2026-10-25T09:29:17.646Z",
+        "maxAgeSeconds": 604800,
+        "expiresAt": "2026-11-01T09:29:17.646Z",
+        "secondsLeftAtEvaluation": 571136
+      },
+      "observation": {
+        "maxObservationAgeSeconds": 900,
+        "observedAt": "2026-10-25T18:50:17.293Z",
+        "runtime": "portaldot-v3/3002"
+      },
+      "validity": {
+        "validUntil": "2026-10-25T19:05:17.293Z",
+        "limitedBy": "observation",
+        "deadlines": {
+          "report": {
+            "at": "2026-10-25T09:29:17.646Z",
+            "limitSeconds": 604800,
+            "until": "2026-11-01T09:29:17.646Z"
+          },
+          "observation": {
+            "at": "2026-10-25T18:50:17.293Z",
+            "limitSeconds": 900,
+            "until": "2026-10-25T19:05:17.293Z"
+          },
+          "registry": {
+            "at": "2026-10-25T18:50:18.235Z",
+            "limitSeconds": 900,
+            "until": "2026-10-25T19:05:18.235Z"
+          },
+          "listing": {
+            "at": "2026-10-25T18:50:19.861Z",
+            "limitSeconds": 900,
+            "until": "2026-10-25T19:05:19.861Z"
+          }
+        },
+        "missing": []
+      },
+      "evaluatedAt": "2026-10-25T18:50:21.356Z",
+      "checkpoints": {
+        "registry": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+        },
+        "observation": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9"
+        },
+        "listing": {
+          "number": "192724",
+          "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+          "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+        },
+        "report": {
+          "number": "187136",
+          "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+          "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+        }
+      },
+      "links": {
+        "report": "https://revivecheck.axiqo.xyz/?report=1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51#/review",
+        "storage": "https://scanner-testnet-v3.portaldot.dev/#/extrinsics/0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+        "reportBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+        "registryBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+        "listingBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+        "observationBlock": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9"
+      },
+      "qr": [
+        {
+          "label": "Exact report in ReviveCheck",
+          "url": "https://revivecheck.axiqo.xyz/?report=1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51#/review"
+        },
+        {
+          "label": "Stored report extrinsic on the official explorer",
+          "url": "https://scanner-testnet-v3.portaldot.dev/#/extrinsics/0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3"
+        }
+      ],
+      "policy": {
+        "schema": "revivecheck.policy.v1",
+        "name": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+        "network": {
+          "key": "testnet",
+          "chainId": 420420777,
+          "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd"
+        },
+        "runtime": {
+          "specName": "portaldot-v3",
+          "specVersions": [
+            "3002"
+          ]
+        },
+        "subject": {
+          "kind": "native-asset",
+          "assetId": "7777",
+          "address": "0x00001e6100000000000000000000000000010000"
+        },
+        "planHash": "ce76c98f90e2851aff534febe6c39a4802fbef32e478a665d3e4109352222191",
+        "evidence": {
+          "scope": "portaldot-testnet-readonly",
+          "maxAgeSeconds": 604800,
+          "maxObservationAgeSeconds": 900,
+          "requireInterfacesAgree": true,
+          "requireStoredOnChain": true
+        },
+        "reviewers": {
+          "trusted": [
+            "0x95db300103ec8b45884b13ed85230fbf02114065"
+          ],
+          "threshold": 1,
+          "basis": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control."
+        },
+        "registry": {
+          "address": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+          "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+          "label": "pusd-catalog-v2"
+        },
+        "consumer": {
+          "address": "0xedaf8a25bb583ad164a94191b762414277198df9",
+          "requireListed": true,
+          "version": 2
+        },
+        "simulation": false
+      },
+      "binding": {
+        "schema": "revivecheck.binding.v1",
+        "id": "20e528d6-62cb-481f-be3b-d0063f9d7dc0",
+        "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+        "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+        "subject": "0x00001e6100000000000000000000000000010000",
+        "subjectKind": "native-asset",
+        "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+        "release": "v1.0.1",
+        "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+        "revision": "2",
+        "boundBy": "allow-list operator (an AI agent on the author's machine); owner and reviewer are distinct accounts, both controlled by the ReviveCheck project",
+        "boundAt": "2026-10-25T18:50:13.021Z",
+        "note": "Release gate binding for pusd-catalog-v2: report 1faef921a720… on revision 2.",
+        "storage": {
+          "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+          "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868"
+        },
+        "bindingHash": "7af4639b394de3e66eab001727dc801ed9d8efa2c5a9453500e93dcbff5f3d05"
+      },
+      "report": {
+        "id": "116a3103-a3c6-4cef-a8d2-787af516dbed",
+        "projectId": "demo-pusd-token-list",
+        "projectName": "pUSD token list",
+        "release": "v1.0.1",
+        "input": {
+          "name": "pUSD token list",
+          "profile": "native-asset",
+          "logicalContractId": "token-list:portaldot-v3:pusd",
+          "expectedChainId": 420420777,
+          "nativeAsset": {
+            "assetId": "7777",
+            "holder": ""
+          },
+          "release": "v1.0.1",
+          "sourceRevision": "pusd-token-list@1.0.1",
+          "listing": {
+            "chainId": 420420777,
+            "address": "0x00001E6100000000000000000000000000010000",
+            "symbol": "pUSD",
+            "name": "Portaldot USD (test)",
+            "decimals": 6
+          }
+        },
+        "mode": "live",
+        "scope": "portaldot-testnet-readonly",
+        "scenario": null,
+        "trigger": "recheck",
+        "startedAt": "2026-10-25T09:29:01.208Z",
+        "completedAt": "2026-10-25T09:29:17.646Z",
+        "previousRunId": "9ed148b9-ef2e-4d97-a5fc-999083971fb3",
+        "status": "passed",
+        "checks": [
+          {
+            "id": "network.chain-id",
+            "title": "Expected testnet identity",
+            "status": "passed",
+            "observed": "EVM and native runtime identify 420420777; pinned native genesis matches",
+            "expected": "420420777",
+            "remediation": "",
+            "evidence": {
+              "evmChainIdHex": "0x190f1ca9",
+              "nativeGenesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+              "nativeRuntimeChainId": "420420777"
+            }
+          },
+          {
+            "id": "network.finalized",
+            "title": "Finalized cross-interface checkpoint",
+            "status": "passed",
+            "observed": "Both interfaces resolve finalized block 187136",
+            "expected": "One canonical finalized checkpoint across the two interfaces",
+            "remediation": "",
+            "evidence": {
+              "nativeBlockHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+              "nativeBlockNumber": "187136",
+              "evmBlockHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91",
+              "runtimeEvmBlockHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+            }
+          },
+          {
+            "id": "asset.native-erc20",
+            "title": "Native Assets / ERC-20 precompile parity",
+            "status": "passed",
+            "observed": "Asset 7777: supply, holder balance, and 6 decimals agree",
+            "expected": "An existing native asset has matching ERC-20 supply, holder balance, and decimals at one finalized checkpoint",
+            "remediation": "",
+            "evidence": {
+              "assetId": "7777",
+              "nativeExists": true,
+              "holderSource": "native-asset-owner",
+              "nativeHolder": "5Eph8MeAG5mBCZCN5nsX3bdgx9LeFMnaUJnRFfo9eVaTseZv",
+              "evmHolder": "0x76f3b32fadfac823d9042266b75f2bb16cbb04a9",
+              "precompileAddress": "0x00001e6100000000000000000000000000010000",
+              "nativeSupply": "100000000000",
+              "erc20Supply": "100000000000",
+              "nativeBalance": "99183035000",
+              "erc20Balance": "99183035000",
+              "nativeDecimals": 6,
+              "erc20Decimals": "6",
+              "nativeBlockHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+              "evmCheckpoint": {
+                "blockHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91",
+                "requireCanonical": true
+              },
+              "targetOwnership": "External public asset; verification does not establish project ownership or independent adoption.",
+              "raw": {
+                "supplyData": "0x000000000000000000000000000000000000000000000000000000174876e800",
+                "balanceData": "0x0000000000000000000000000000000000000000000000000000001717c50278",
+                "decimalsData": "0x0000000000000000000000000000000000000000000000000000000000000006"
+              }
+            }
+          },
+          {
+            "id": "token.listing",
+            "title": "Token-list entry matches the chain",
+            "status": "passed",
+            "observed": "Chain ID, address, symbol, name and decimals match through both interfaces",
+            "expected": "The released token-list entry matches native Assets metadata and its ERC-20 precompile at one finalized checkpoint",
+            "remediation": "",
+            "evidence": {
+              "assetId": "7777",
+              "precompileAddress": "0x00001e6100000000000000000000000000010000",
+              "fields": [
+                {
+                  "field": "chainId",
+                  "claimed": 420420777,
+                  "native": 420420777,
+                  "evm": 420420777,
+                  "status": "passed"
+                },
+                {
+                  "field": "address",
+                  "claimed": "0x00001e6100000000000000000000000000010000",
+                  "native": "0x00001e6100000000000000000000000000010000",
+                  "evm": "0x00001e6100000000000000000000000000010000",
+                  "status": "passed"
+                },
+                {
+                  "field": "symbol",
+                  "claimed": "pUSD",
+                  "native": "pUSD",
+                  "evm": "pUSD",
+                  "status": "passed"
+                },
+                {
+                  "field": "name",
+                  "claimed": "Portaldot USD (test)",
+                  "native": "Portaldot USD (test)",
+                  "evm": "Portaldot USD (test)",
+                  "status": "passed"
+                },
+                {
+                  "field": "decimals",
+                  "claimed": 6,
+                  "native": 6,
+                  "evm": 6,
+                  "status": "passed"
+                }
+              ],
+              "nativeBlockHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+              "evmCheckpoint": {
+                "blockHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91",
+                "requireCanonical": true
+              },
+              "raw": {
+                "nameData": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000014506f7274616c646f742055534420287465737429000000000000000000000000",
+                "symbolData": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000047055534400000000000000000000000000000000000000000000000000000000",
+                "decimalsData": "0x0000000000000000000000000000000000000000000000000000000000000006"
+              }
+            }
+          }
+        ],
+        "network": {
+          "name": "Portaldot V3 Testnet",
+          "chainId": 420420777,
+          "evmRpcUrl": "https://test-evm-rpc-v3.portaldot.dev",
+          "substrateRpcUrl": "wss://test-node-v3.portaldot.dev",
+          "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+          "observedChainId": 420420777,
+          "nativeGenesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+          "specVersion": "3002",
+          "finalizedBlockNumber": "187136",
+          "finalizedNativeBlockHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+          "finalizedEvmBlockHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91",
+          "specName": "portaldot-v3",
+          "transactionVersion": "2",
+          "stateVersion": "1",
+          "parameterSnapshot": {
+            "chainId": "420420777",
+            "nativeToEthRatio": "10000",
+            "allowEVMBytecode": "true",
+            "autoMap": "true",
+            "depositPerByte": "6000000000000",
+            "depositPerItem": "15000000000000",
+            "gasScale": "5",
+            "existentialDeposit": "10000000000000"
+          },
+          "constantsHash": "0xfb9b71dc034742bb9df2ee1e1e6c3a0f4e734b75898b7291ef8806a4b1e2b759",
+          "precompileAdapter": {
+            "assetInstance": "Assets",
+            "addressScheme": "u32-be + 12 zero bytes + 00010000",
+            "verifiedSpecVersion": "3002"
+          }
+        },
+        "limitations": [
+          "Read-only verification does not sign, deploy, or prove a complete product flow.",
+          "This profile verifies an external public native asset. It does not establish project-owned deployment, funding, signed execution, or independent adoption.",
+          "A token-list check compares one released entry with chain metadata at one checkpoint. It does not assess the issuer, liquidity, or transfer behavior."
+        ],
+        "schemaVersion": 2,
+        "binding": {
+          "plan": {
+            "profile": "native-asset",
+            "logicalContractId": "token-list:portaldot-v3:pusd",
+            "nativeAsset": {
+              "assetId": "7777",
+              "holder": "asset-owner-at-checkpoint"
+            }
+          },
+          "planHash": "ce76c98f90e2851aff534febe6c39a4802fbef32e478a665d3e4109352222191",
+          "logicalContractId": "token-list:portaldot-v3:pusd",
+          "sourceRevision": "pusd-token-list@1.0.1",
+          "releaseArtifactHash": "eda4720cd0c79c72a752439eb9d33f9cc8b0b39a2e94246f1357ed1b16cf93a6",
+          "contractAddress": "",
+          "codeHash": null,
+          "environment": {
+            "chainId": "420420777",
+            "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+            "specName": "portaldot-v3",
+            "specVersion": "3002",
+            "transactionVersion": "2",
+            "stateVersion": "1",
+            "constantsHash": "0xfb9b71dc034742bb9df2ee1e1e6c3a0f4e734b75898b7291ef8806a4b1e2b759"
+          },
+          "environmentHash": "585d0c8da2b0137796aea6acd09e814d8d2b970f5ec3bba917f9a010fa2c48d0",
+          "checkpoint": {
+            "number": "187136",
+            "nativeHash": "0x08cbf463c726734e4837aebbe316bfac3b2fcafa65e14671217a3210bc81c798",
+            "evmHash": "0x7c6c56fe44ba519f936fd4fe2d78607aba07aff03c4ff4ba5bbdeb7365c44f91"
+          }
+        },
+        "evidenceHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+      },
+      "evaluation": {
+        "schema": "revivecheck.policy-evaluation.v1",
+        "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+        "policyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+        "subject": "0x00001e6100000000000000000000000000010000",
+        "subjectKind": "native-asset",
+        "bindingId": "20e528d6-62cb-481f-be3b-d0063f9d7dc0",
+        "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+        "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+        "revision": "2",
+        "status": "valid",
+        "enable": true,
+        "reasons": [],
+        "checks": [
+          {
+            "id": "evidence.integrity",
+            "status": "passed",
+            "observed": "binding and report verify",
+            "expected": "an intact binding under this policy and its exact semantically consistent report"
+          },
+          {
+            "id": "evidence.scope",
+            "status": "passed",
+            "observed": "live/portaldot-testnet-readonly",
+            "expected": "portaldot-testnet-readonly"
+          },
+          {
+            "id": "target.network",
+            "status": "passed",
+            "observed": "chain 420420777, genesis 0xd4f9acbcf7…",
+            "expected": "chain 420420777, genesis 0xd4f9acbcf7…"
+          },
+          {
+            "id": "target.subject",
+            "status": "passed",
+            "observed": "asset 7777 at 0x00001e6100000000000000000000000000010000",
+            "expected": "asset 7777 at 0x00001e6100000000000000000000000000010000"
+          },
+          {
+            "id": "plan.fingerprint",
+            "status": "passed",
+            "observed": "ce76c98f90e2851aff534febe6c39a4802fbef32e478a665d3e4109352222191",
+            "expected": "ce76c98f90e2851aff534febe6c39a4802fbef32e478a665d3e4109352222191"
+          },
+          {
+            "id": "report.status",
+            "status": "passed",
+            "observed": "passed",
+            "expected": "passed"
+          },
+          {
+            "id": "runtime.report",
+            "status": "passed",
+            "observed": "portaldot-v3/3002",
+            "expected": "portaldot-v3/3002"
+          },
+          {
+            "id": "observation.present",
+            "status": "passed",
+            "observed": "observation without a time",
+            "expected": "a dated finalized observation of the network"
+          },
+          {
+            "id": "observation.fresh",
+            "status": "passed",
+            "observed": "4 s old",
+            "expected": "at most 900 s old"
+          },
+          {
+            "id": "observation.network",
+            "status": "passed",
+            "observed": "chain 420420777, genesis 0xd4f9acbcf7…",
+            "expected": "chain 420420777, genesis 0xd4f9acbcf7…"
+          },
+          {
+            "id": "runtime.current",
+            "status": "passed",
+            "observed": "portaldot-v3/3002",
+            "expected": "portaldot-v3/3002"
+          },
+          {
+            "id": "evidence.age",
+            "status": "passed",
+            "observed": "33664 s since the report",
+            "expected": "at most 604800 s old, with at most 60 s clock skew"
+          },
+          {
+            "id": "registry.read",
+            "status": "passed",
+            "observed": "read",
+            "expected": "releaseOf and every trusted decision through both interfaces"
+          },
+          {
+            "id": "registry.provenance",
+            "status": "passed",
+            "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927, 2026-10-25T18:50:18.235Z",
+            "expected": "the dated registry contract and release"
+          },
+          {
+            "id": "registry.domain",
+            "status": "passed",
+            "observed": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+            "expected": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339, 0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927"
+          },
+          {
+            "id": "registry.fresh",
+            "status": "passed",
+            "observed": "3 s old",
+            "expected": "at most 900 s old"
+          },
+          {
+            "id": "registry.interfaces",
+            "status": "passed",
+            "observed": "EVM RPC and ReviveApi agree",
+            "expected": "agreement at one finalized block"
+          },
+          {
+            "id": "registry.release",
+            "status": "passed",
+            "observed": "revision 2",
+            "expected": "the release exists"
+          },
+          {
+            "id": "registry.owner",
+            "status": "passed",
+            "observed": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+            "expected": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b"
+          },
+          {
+            "id": "registry.label",
+            "status": "passed",
+            "observed": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+            "expected": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927"
+          },
+          {
+            "id": "registry.revision",
+            "status": "passed",
+            "observed": "revision 2, report 0x1faef921a720…",
+            "expected": "revision 2, report 0x1faef921a720…"
+          },
+          {
+            "id": "registry.approvals",
+            "status": "passed",
+            "observed": "1 of 1 trusted reviewer approved revision 2",
+            "expected": "at least 1, every trusted decision read and no trusted request for changes"
+          },
+          {
+            "id": "consumer.read",
+            "status": "passed",
+            "observed": "read",
+            "expected": "isListed and entryOf through both interfaces"
+          },
+          {
+            "id": "consumer.provenance",
+            "status": "passed",
+            "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000, 2026-10-25T18:50:19.861Z",
+            "expected": "the dated consumer contract and token"
+          },
+          {
+            "id": "consumer.domain",
+            "status": "passed",
+            "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000",
+            "expected": "0xedaf8a25bb583ad164a94191b762414277198df9, 0x00001e6100000000000000000000000000010000"
+          },
+          {
+            "id": "consumer.fresh",
+            "status": "passed",
+            "observed": "1 s old",
+            "expected": "at most 900 s old"
+          },
+          {
+            "id": "consumer.identity",
+            "status": "passed",
+            "observed": "identity at 0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "expected": "consumer identity through both interfaces at the listing checkpoint"
+          },
+          {
+            "id": "consumer.registry",
+            "status": "passed",
+            "observed": "0xedaf8a25bb583ad164a94191b762414277198df9, registry 0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+            "expected": "0xedaf8a25bb583ad164a94191b762414277198df9, registry 0xe949b200edf070b9d425b206ed24dc8fe5b7d339"
+          },
+          {
+            "id": "consumer.version-known",
+            "status": "passed",
+            "observed": "2",
+            "expected": "an observed getter or the explicitly selected, code-verified legacy deployment"
+          },
+          {
+            "id": "consumer.version",
+            "status": "passed",
+            "observed": "2",
+            "expected": "2"
+          },
+          {
+            "id": "consumer.interfaces",
+            "status": "passed",
+            "observed": "EVM RPC and ReviveApi agree",
+            "expected": "agreement at one finalized block"
+          },
+          {
+            "id": "consumer.listed",
+            "status": "passed",
+            "observed": "listed",
+            "expected": "listed"
+          },
+          {
+            "id": "consumer.entry",
+            "status": "passed",
+            "observed": "release 0x28ab8a86a4…, report 0x1faef921a7…, reviewer 0x95db300103ec8b45884b13ed85230fbf02114065",
+            "expected": "release 0x28ab8a86a4…, report 0x1faef921a7…, a trusted reviewer"
+          },
+          {
+            "id": "storage.read",
+            "status": "passed",
+            "observed": "not verified",
+            "expected": "the report retrieved and verified from chain data"
+          },
+          {
+            "id": "storage.report",
+            "status": "passed",
+            "observed": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+            "expected": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+          }
+        ],
+        "checkpoint": {
+          "registry": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+          },
+          "observation": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9"
+          },
+          "listing": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+          }
+        },
+        "reviewerTrust": "Only the ReviveCheck project's separate reviewer test account 0x95db300103ec8b45884b13ed85230fbf02114065 counts. The release owner 0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b and this reviewer are both controlled by the same project, so an approval shows on-chain role separation between two signers, not independent review. A production allow-list would name reviewers its operator does not control.",
+        "simulation": false,
+        "evaluatedAt": "2026-10-25T18:50:21.356Z",
+        "nextAction": "Enable the subject under this policy. Validity is a point-in-time result: evaluate again before each use.",
+        "caveat": "A valid result means every policy condition held at the recorded checkpoints and time. It is not a guarantee of future state, a security audit or independent review; the trusted reviewer set is the policy author's choice.",
+        "evaluationHash": "82df548f87c4bcb0f3b07086e414c01741b08d3dfe90e269c74378d44385506e"
+      },
+      "inputs": {
+        "observation": {
+          "network": "testnet",
+          "name": "Portaldot V3 Testnet",
+          "symbol": "tPOT",
+          "decimals": 14,
+          "chainId": 420420777,
+          "genesisHash": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+          "genesisMatches": true,
+          "runtime": "portaldot-v3/3002",
+          "finalized": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "explorerUrl": "https://scanner-testnet-v3.portaldot.dev/#/blocks/0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9"
+          },
+          "evm": {
+            "rpcUrl": "https://test-evm-rpc-v3.portaldot.dev",
+            "chainId": 420420777,
+            "finalizedHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+          },
+          "explorer": "https://scanner-testnet-v3.portaldot.dev",
+          "observedAt": "2026-10-25T18:50:17.293Z"
+        },
+        "registry": {
+          "address": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+          "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+          "block": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+          },
+          "observedAt": "2026-10-25T18:50:18.235Z",
+          "release": {
+            "exists": true,
+            "owner": "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+            "revision": "2",
+            "reportHash": "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+          },
+          "decision": null,
+          "decisions": {
+            "0x95db300103ec8b45884b13ed85230fbf02114065": {
+              "reviewer": "0x95db300103ec8b45884b13ed85230fbf02114065",
+              "reviewed": true,
+              "approved": true
+            }
+          },
+          "interfacesAgree": true,
+          "views": {
+            "releaseOf": {
+              "evm": [
+                "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+                "2",
+                "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+              ],
+              "native": [
+                "0x48b9e37a2a2c9621172745dc377b9fc6b9a6a71b",
+                "2",
+                "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+              ],
+              "match": true
+            },
+            "decisionOf:0x95db300103ec8b45884b13ed85230fbf02114065": {
+              "evm": [
+                true,
+                true
+              ],
+              "native": [
+                true,
+                true
+              ],
+              "match": true
+            }
+          }
+        },
+        "listing": {
+          "token": "0x00001e6100000000000000000000000000010000",
+          "list": "0xedaf8a25bb583ad164a94191b762414277198df9",
+          "block": {
+            "number": "192724",
+            "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+            "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+          },
+          "listed": true,
+          "entry": {
+            "releaseId": "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+            "reportHash": "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+            "reviewer": "0x95db300103ec8b45884b13ed85230fbf02114065"
+          },
+          "interfacesAgree": true,
+          "views": {
+            "isListed": {
+              "evm": [
+                true
+              ],
+              "native": [
+                true
+              ],
+              "match": true
+            },
+            "entryOf": {
+              "evm": [
+                "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+                "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+                "0x95db300103ec8b45884b13ed85230fbf02114065"
+              ],
+              "native": [
+                "0x28ab8a86a4d1ca4f5b38784d8f0a32c14ed163ae7f1ff9f4f5b5128fe5fdd927",
+                "0x1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+                "0x95db300103ec8b45884b13ed85230fbf02114065"
+              ],
+              "match": true
+            }
+          },
+          "identity": {
+            "address": "0xedaf8a25bb583ad164a94191b762414277198df9",
+            "block": {
+              "number": "192724",
+              "nativeHash": "0x00c7f141833b6c70ca33c83bd43819ce93732efd63fa1701eef4545e2cbdd1e9",
+              "evmHash": "0xfd515b225eeaa6c58092e2e0d0a7f65b0cedb492b410e69a0d8bbb04e2d74e98"
+            },
+            "evm": {
+              "version": "2",
+              "registry": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+              "curator": "0x0000000000000000000000000000000000000000"
+            },
+            "native": {
+              "version": "2",
+              "registry": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+              "curator": "0x0000000000000000000000000000000000000000"
+            },
+            "interfacesAgree": true,
+            "views": {
+              "version": {
+                "evm": "2",
+                "native": "2",
+                "match": true
+              },
+              "registry": {
+                "evm": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+                "native": "0xe949b200edf070b9d425b206ed24dc8fe5b7d339",
+                "match": true
+              },
+              "curator": {
+                "evm": "0x0000000000000000000000000000000000000000",
+                "native": "0x0000000000000000000000000000000000000000",
+                "match": true
+              }
+            },
+            "runtimeCodeHash": "0xf43602cb2e6593f029d9ce84e9e18c38d36079689e0fa5a2251d0be6c360074d",
+            "observedAt": "2026-10-25T18:50:19.861Z",
+            "version": 2,
+            "versionSource": "on-chain-version-getter"
+          },
+          "observedAt": "2026-10-25T18:50:19.861Z"
+        },
+        "evidence": {
+          "verified": true,
+          "extrinsicHash": "0x80d46a8611bb486f3b71bdd6e9e15c96e522c536e2671c9f35d0a4496792feb3",
+          "blockHash": "0x18a28f38f2a66093eab90d11f438664428141cfade5df5ce031ff3f4519ce868",
+          "reasons": [],
+          "blockNumber": "187145",
+          "finalized": true,
+          "extrinsicIndex": 1,
+          "time": "2026-10-25T09:29:54.000Z",
+          "publisher": "5GH8LpSTf6sp31FeacbFE99E3b9NQb5E7xWHeBL8XqW3YhTt",
+          "length": 7404,
+          "contentHash": "0xcae9e2a7bd13559a6c3c5536dd63c2dedcbb4dfc2d10847fb21138b8b6050f05",
+          "reportHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51",
+          "runHash": "1faef921a720bf7af7ea87f6fd4875089b61de7617a16b3a4766075c819a1d51"
+        }
+      },
+      "extra": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "startedAt": "2026-10-25T18:50:03.673Z",
+            "failedReads": []
+          }
+        ],
+        "fixture": null
+      },
+      "caveat": "Integrity of this document shows that the decision follows from these exact artifacts at the recorded checkpoints and time. It is not proof of current eligibility, of the reviewer's identity beyond the policy's trust basis, or of an independent audit. A self-declared review receipt or a signed remark is not a ReleaseRegistry approval.",
+      "evidenceHash": "a3a30436f14849fbafe46ff4fbeabccb01a05ecc4960ebed3c62a188ea11ef64"
+    }
+  ],
+  "rule": "An entry is included only when its binding evaluated to valid under the declared policy, the published fields equal the approved report field by field, and the permission deadline derived from its evidence had not passed at generation. Every included field comes from the approved report, never from a configuration alone.",
+  "caveat": "This release records decisions made at the recorded checkpoints and time. Its hash shows that the decisions follow from the embedded artifacts; it is not proof of current eligibility, of the reviewers' identity beyond each policy's trust basis, of an independent audit, or of hosting or delivery. A reader evaluates again before use.",
+  "note": "",
+  "releaseHash": "329a8dbbcbd49982ba6da22c7806c011f1ef52e60c5dda0527cc7a48ec03f986"
+}

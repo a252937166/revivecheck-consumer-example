@@ -9,7 +9,10 @@
 // replayed from captured reads, which carry a persistent label and never enable anything.
 // A current permission ends at the deadline its own evidence sets (the report's age limit
 // or the earliest read's freshness limit); the page checks that deadline against the clock
-// on every render, at the deadline itself, and again inside the Continue handler.
+// on every render, at the deadline itself, and again inside the release handler. The
+// business action is a versioned token-catalog release built from the eligible entry and
+// its decision evidence (revivecheck/catalog-release); the page keeps the releases it
+// prepared, compares them, and reads any release file back the way a separate process would.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import config from '../config/allowlist.json';
@@ -24,8 +27,13 @@ import { entryDecision, canonicalEntry } from 'revivecheck/entry';
 import { loadConfig, runFixture, runLive, decide } from '../src/evaluate.js';
 import { decisionEvidenceFor } from '../src/decision-evidence.js';
 import { selectorOptions, proceedNow } from '../src/selector.js';
+import { buildCatalogRelease, readCatalogRelease, compareCatalogReleases, selectorFrom } from 'revivecheck/catalog-release';
 
 loadConfig(config, 'config/allowlist.json');
+// The catalog releases this browser prepared, newest last: local history of a business output, not proof of hosting or delivery.
+const RELEASES_KEY = 'revivecheck-consumer.releases.v1';
+const loadReleases = () => { try { const list = JSON.parse(localStorage.getItem(RELEASES_KEY) || '[]'); return Array.isArray(list) ? list : []; } catch { return []; } };
+const saveReleases = (list) => { try { localStorage.setItem(RELEASES_KEY, JSON.stringify(list.slice(-10))); } catch { /* the list lives in memory only */ } return list; };
 const APP = 'https://revivecheck.axiqo.xyz/';
 const SOURCE = 'https://github.com/a252937166/revivecheck-consumer-example';
 const EXPLORER = 'https://scanner-testnet-v3.portaldot.dev';
@@ -82,6 +90,39 @@ function DecisionBody({ decision: result, entry, report, label }) {
   </div>;
 }
 
+/** The releases this browser prepared, newest first, each read at `now` and compared with its predecessor. */
+function ReleaseHistory({ releases, now }) {
+  return <ol className="releases">{[...releases].reverse().map((release, index, all) => {
+    const previous = all[index + 1] ?? null;
+    const read = readCatalogRelease(release, { now });
+    const diff = previous ? compareCatalogReleases(previous, release) : null;
+    const [entry] = release.entries;
+    return <li key={release.releaseHash} className={read.ok ? 'pass' : 'fail'}>
+      <p className="release-head"><span className={`pill ${read.ok ? 'pass' : 'fail'}`}>{read.ok ? 'usable now' : 'not usable now'}</span> <b>Release {release.version}</b> · {when(release.generatedAt)} · <Identity value={release.releaseHash} keep={8}/>{release.previousReleaseHash ? <> · after <Identity value={release.previousReleaseHash} keep={6}/></> : ' · first'}</p>
+      <dl className="facts">
+        <div><dt>Entry</dt><dd>{entry ? <>{entry.symbol} · {entry.name} · {entry.decimals} decimals · asset {entry.assetId} · from report <Identity value={entry.reportHash} keep={8}/> revision {entry.revision}</> : `none (${release.withheld[0]?.reasons.join(', ')})`}</dd></div>
+        <div><dt>Permission</dt><dd>{release.validity.validUntil ? <>until <b>{when(release.validity.validUntil)}</b> ({LIMIT_WORDS[release.validity.limitedBy]}); read now: {read.usable.length ? read.usable[0].detail : read.withheld[0]?.detail}</> : 'none'}</dd></div>
+        <div><dt>Verification</dt><dd>{read.verification.ok ? `${read.verification.checks.length} checks pass from the document alone (hash, every embedded decision reconstructs, entries equal the eligible decisions)` : `FAILED: ${read.verification.checks.filter((check) => !check.ok).map((check) => check.id).join(', ')}`}</dd></div>
+        {diff && <div><dt>Against release {previous.version}</dt><dd>{diff.chained ? 'chained' : 'not chained'} · {diff.summary.added} added, {diff.summary.removed} removed, {diff.summary.changed} changed, {diff.summary.unchanged} unchanged{diff.changed[0] ? <>; {diff.changed[0].evidence.map((item) => `${item.key} ${String(item.before).slice(0, 8)}… → ${String(item.after).slice(0, 8)}…`).join(', ')}</> : null}{diff.removed[0]?.withheldAfter ? <>; dropped: {diff.removed[0].withheldAfter.reasons.join(', ')}</> : null}</dd></div>}
+      </dl>
+      <div className="actions"><button type="button" onClick={() => download(new Blob([JSON.stringify(release, null, 2)], { type: 'application/json' }), `catalog-release-${release.version}-${release.releaseHash.slice(0, 12)}.json`)}>Download release {release.version} (JSON)</button></div>
+    </li>;
+  })}</ol>;
+}
+
+/** A release file read back the way a separate process reads it: verification, then the selector it fills at the clock of reading. */
+function LoadedRelease({ loaded }) {
+  const { name, read } = loaded;
+  const rows = selectorFrom(read);
+  return <div className={`replay ${read.ok ? 'pass' : 'fail'}`}>
+    <p className="label recorded">LOADED RELEASE · {name} · version {read.version ?? '?'} · read {when(read.readAt)} · {read.freshness}</p>
+    <p className="verdict small">{read.ok ? 'At least one entry may be used now' : 'Nothing in this file may be used now'}</p>
+    <p className="muted">{read.note}</p>
+    <ul className="option-list">{rows.map((row) => <li key={row.id}><span className={`pill ${row.selectable ? 'pass' : 'fail'}`}>{row.selectable ? 'selectable' : 'not selectable'}</span> <b>{row.label}</b><br/><small>{row.reason}</small></li>)}</ul>
+    {!read.verification.ok && <p className="error">Verification failed: {read.verification.checks.filter((check) => !check.ok).map((check) => `${check.id} (${check.detail})`).join('; ')}</p>}
+  </div>;
+}
+
 export default function App() {
   const [entry, setEntry] = useState(WRONG_ENTRY);
   const selection = useMemo(() => ({ mode: 'live', entry: canonicalEntry(entry) }), [entry]);
@@ -95,6 +136,10 @@ export default function App() {
   const [qr, setQr] = useState({});
   const [now, setNow] = useState(() => new Date());
   const [refused, setRefused] = useState('');
+  const [releases, setReleases] = useState(loadReleases);
+  const [releaseNotice, setReleaseNotice] = useState('');
+  const [loaded, setLoaded] = useState(null);   // a release file read back: { name, release, read }
+  const [loadError, setLoadError] = useState('');
   useEffect(() => { setDecision((current) => changeSelection(current, selection)); setRefused(''); }, [selection]);
   // The clock the page renders with: every fifteen seconds, when the tab comes back, and at the deadline itself.
   useEffect(() => {
@@ -158,12 +203,44 @@ export default function App() {
     setReplay({ id: item.id, title: item.title, note: item.note, run, result, entry: entryDecision(entry, run.report) });
   }
 
-  /** The business action checks the clock itself; the screen's state is not consulted. */
-  function continueWith() {
-    const check = proceedNow(decisionRef.current, { subject: config.entry, chosen, now: new Date() });
-    if (!check.ok) { setRefused(`Refused at ${when(new Date())}: ${check.reason}`); setNow(new Date()); setDecision((current) => ageDecision(current, { now: new Date() })); return; }
+  /**
+   * The business action: prepare a versioned token-catalog release from the eligible entry.
+   * It checks the clock itself (the screen's state is not consulted), then builds the release
+   * from the exact artifacts of the current decision: policy, binding, retrieved report, the
+   * reads and the evaluation. The release is kept in this browser's history, downloaded, and
+   * compared with the previous one. A local file is not proof of hosting or delivery.
+   */
+  function prepareRelease() {
+    const at = new Date();
+    const check = proceedNow(decisionRef.current, { subject: config.entry, chosen, now: at });
+    if (!check.ok) { setRefused(`Refused at ${when(at)}: ${check.reason}`); setNow(at); setDecision((current) => ageDecision(current, { now: at })); return; }
     setRefused('');
-    alert(`Continuing with ${check.option.label}. Permission verified at ${new Date().toISOString()}${check.option.validUntil ? `, valid until ${check.option.validUntil}` : ''}. This example stops here: it is a token-admission demonstration, not an exchange.`);
+    try {
+      const { run, result } = decisionRef.current.current.extra;
+      const previous = releases.at(-1) ?? null;
+      const release = buildCatalogRelease({
+        name: config.name, previous, generatedAt: at.toISOString(),
+        producer: { name: config.name, kind: 'consumer', control: config.roles?.operator?.control ?? null, source: run.source, interface: 'Token eligibility demo (browser)' },
+        decisions: [{ policy: config.policy, binding: run.binding, report: run.report, evaluation: result.evaluation, inputs: run.inputs, configuredEntry: entry, extra: { allowlist: result.allowlist } }],
+      });
+      if (!release.entries.length) { setReleaseNotice(`Nothing was released: the entry was not eligible at ${when(at)} (${release.withheld[0]?.reasons.join(', ') || 'no reason recorded'}).`); return; }
+      const list = saveReleases([...releases, release]);
+      setReleases(list);
+      download(new Blob([JSON.stringify(release, null, 2)], { type: 'application/json' }), `catalog-release-${release.version}-${release.releaseHash.slice(0, 12)}.json`);
+      setReleaseNotice(`Release ${release.version} prepared at ${when(at)}: ${release.entries.length} entry, hash ${release.releaseHash.slice(0, 16)}…, permission until ${when(release.validity.validUntil)}${previous ? `, after release ${previous.version}` : ''}. Saved in this browser and downloaded.`);
+    } catch (error) { setReleaseNotice(`No release was prepared: ${error.message}`); }
+  }
+  /** Read a release file as a separate reader would: verify it from the document alone and apply each entry's deadline now. */
+  async function loadRelease(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const release = JSON.parse(await file.text());
+      const read = readCatalogRelease(release, { now: new Date() });
+      setLoaded({ name: file.name, release, read });
+      setLoadError('');
+    } catch (error) { setLoaded(null); setLoadError(`The file could not be read as a catalog release: ${error.message}`); }
+    event.target.value = '';
   }
   const permission = checkPermission(decision, { now });
   const described = describeDecision(decision, { subject: 'the configured entry', now });
@@ -219,18 +296,28 @@ export default function App() {
         </section>
 
         <section className="block" aria-labelledby="selector-title">
-          <h2 id="selector-title">3 · The business action: choose a token</h2>
-          <p className="muted">The selector reads the allow-list the evaluator produced. The configured token is selectable only while the current decision is valid, its entry equals the approved report and its deadline has not passed. Continue checks the clock again at the moment it is pressed; no flag is set by hand.</p>
+          <h2 id="selector-title">3 · The business action: release the eligible entry</h2>
+          <p className="muted">The selector reads the allow-list the evaluator produced. The configured token is selectable only while the current decision is valid, its entry equals the approved report and its deadline has not passed. <b>Prepare catalog release</b> checks the clock again at the moment it is pressed, then writes a versioned token-catalog release from the exact artifacts of the current decision; no flag is set by hand.</p>
           <div className="selector">
-            <label>Pay with<select value={chosen} onChange={(event) => setChosen(event.target.value)}>{options.map((option) => <option key={option.id} value={option.id} disabled={!option.selectable}>{option.label}</option>)}</select></label>
-            <button type="button" className="primary" disabled={!proceed} onClick={continueWith}>Continue</button>
+            <label>Release entry<select value={chosen} onChange={(event) => setChosen(event.target.value)}>{options.map((option) => <option key={option.id} value={option.id} disabled={!option.selectable}>{option.label}</option>)}</select></label>
+            <button type="button" className="primary" disabled={!proceed || chosen === 'native'} onClick={prepareRelease}>Prepare catalog release</button>
           </div>
-          {refused && <p className="error" role="alert"><b>Not continued.</b> {refused}</p>}
+          {refused && <p className="error" role="alert"><b>No release.</b> {refused}</p>}
+          {releaseNotice && <p className={/^Release \d+ prepared/.test(releaseNotice) ? 'ok' : 'error'} role="status">{releaseNotice}</p>}
           <ul className="option-list">{options.map((option) => <li key={option.id}><span className={`pill ${option.selectable ? 'pass' : 'fail'}`}>{option.selectable ? 'selectable' : 'not selectable'}</span> <b>{option.label}</b><br/><small>{option.reason}</small></li>)}</ul>
         </section>
 
+        <section className="block" aria-labelledby="releases-title">
+          <h2 id="releases-title">4 · Catalog releases: the output, and a reader of it</h2>
+          <p className="muted">Each release holds the eligible entry with every field from the approved report, its decision evidence (policy, binding, exact report, reads, evaluation), the permission deadline, the previous release's hash and its own hash. A reader verifies the file from the document alone and applies each entry's deadline; with fresh reads it evaluates the policy again. An expired release is history.</p>
+          {releases.length ? <ReleaseHistory releases={releases} now={now}/> : <p className="muted">No release prepared in this browser yet. Check the token, correct the entry, and prepare one.</p>}
+          <div className="actions"><label className="button">Load a release file<input type="file" accept="application/json,.json" onChange={loadRelease} hidden/></label>{releases.length > 0 && <button type="button" onClick={() => { if (confirm('Forget the releases kept in this browser? Downloaded files are unaffected.')) { saveReleases([]); setReleases([]); } }}>Forget local history</button>}</div>
+          {loadError && <p className="error" role="alert">{loadError}</p>}
+          {loaded && <LoadedRelease loaded={loaded}/>}
+        </section>
+
         <section className="block" aria-labelledby="recorded-title">
-          <h2 id="recorded-title">4 · Recorded states, replayed through the same logic</h2>
+          <h2 id="recorded-title">5 · Recorded states, replayed through the same logic</h2>
           <p className="muted">Reads captured live on the testnet on 2026-10-25, evaluated here under this application's policy with the entry configured above. They explain why the token becomes unavailable and what restores it. A recorded state never enables the selector.</p>
           <div className="chips">{FIXTURES.map((item) => <button type="button" key={item.id} className={replay?.id === item.id ? 'chip on' : 'chip'} onClick={() => replayFixture(item)}>{item.title}</button>)}</div>
           {replay && <div className={`replay ${replay.result.allowed ? 'pass' : 'fail'}`}>

@@ -50,6 +50,19 @@ jobs:
             node src/reconstruct.js ".ci-out/$dir/decision-evidence.json"
           done
           test ! -f .ci-out/unavailable/decision-evidence.json || node src/reconstruct.js .ci-out/unavailable/decision-evidence.json
+      - name: Release gate on captured reads (permitted): the catalog release is written and read in another process
+        run: |
+          set -e
+          npm run release:fixture
+          NOW=$(node -e "console.log(require('./out/releases/catalog-release-1.json').generatedAt)")
+          npm run release:read -- out/releases/catalog-release-1.json --now "$NOW"
+          node -e "const o=require('./out/releases/outcome.json'); if (o.status!=='permitted') process.exit(1); console.log('permitted: release', o.release.version, o.release.releaseHash)"
+      - name: Release gate on the revoked reads (refused): no release file, the outcome names the reviewer's next action
+        run: |
+          set -e
+          if npx revivecheck-catalog prepare --config config/allowlist.json --out .ci-out/release-revoked --fixture fixtures/revoked-r2.json; then echo "::error::the revoked case was permitted; it must be refused"; exit 1; fi
+          test ! -e .ci-out/release-revoked/catalog-release-1.json
+          node -e "const o=require('./.ci-out/release-revoked/outcome.json'); if (o.status!=='refused' || !o.reasons.includes('approval-revoked')) { console.error(o); process.exit(1) } console.log('refused:', o.reasons.join(', '), '->', o.diagnostics.map((d)=>d.pointer+' ('+d.role+')').join('; '))"
       - name: Build the browser interface
         run: npm run web:build
       - name: Keep every case's outputs
@@ -57,7 +70,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fixture-outputs
-          path: .ci-out
+          path: |
+            .ci-out
+            out/releases
 
   live:
     name: Live check (manual; needs the public testnet nodes)
@@ -73,6 +88,10 @@ jobs:
         run: npm run check -- --out .ci-out/live
       - name: Reconstruct the live decision from its evidence document
         run: node src/reconstruct.js .ci-out/live/decision-evidence.json
+      - name: Release gate on fresh reads; write the catalog release only when permitted, then read it with fresh reads
+        run: |
+          npx revivecheck-catalog prepare --config config/allowlist.json --out .ci-out/live/releases
+          npx revivecheck-catalog read .ci-out/live/releases/catalog-release-1.json --live
       - name: Keep the live outputs
         if: always()
         uses: actions/upload-artifact@v4

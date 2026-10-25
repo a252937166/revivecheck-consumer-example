@@ -1,12 +1,14 @@
 # ReviveCheck package artifacts vendored by this repository. Verify with
 #   (cd vendor && shasum -a 256 -c CHECKSUMS.txt)          macOS
 #   cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -   GNU coreutils
-# revivecheck-0.4.1.tgz: the dependency in package.json, produced with `npm pack` inside
-# the ReviveCheck checkout at commit 2e1673d (2026-10-25, clean tree); carries the
-# evidence-derived permission deadline (revivecheck/current `checkPermission`).
-# revivecheck-0.4.0.tgz: the previous artifact (commit 6b7402f), kept as history with
-# its verification record; the earlier 0.3.0 artifact, SHA-256
+# revivecheck-0.5.0.tgz: the dependency in package.json, produced with `npm pack` inside
+# the ReviveCheck checkout at commit e105dfe (2026-10-25, clean tree); adds
+# revivecheck/catalog-release (the versioned catalog release, the reader and the
+# release gate command revivecheck-catalog) and the release gate starter.
+# revivecheck-0.4.1.tgz (commit 2e1673d; the evidence-derived permission deadline) and
+# revivecheck-0.4.0.tgz (commit 6b7402f) are the previous artifacts, kept as history; the earlier 0.3.0 artifact, SHA-256
 # 472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c from commit
 # 8aee632f9eff67211e482605527a043d89aa6b8a, is recorded in ONBOARDING_LOG.md.
 aa48acddc3c7d779cfc2849c7c5331c09802db24d50f6b28ddc0702ea87fcf35  revivecheck-0.4.0.tgz
 5a0003ae4d4603141210df8d2638dc2f31f2a91019c9e6e4c2078555a33a868b  revivecheck-0.4.1.tgz
+d818494389e86ffad0d8005f0c6ca5a1d15babcd169f6b002938e979e5f594ef  revivecheck-0.5.0.tgz
