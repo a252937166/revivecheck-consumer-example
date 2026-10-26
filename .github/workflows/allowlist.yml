@@ -50,7 +50,7 @@ jobs:
             node src/reconstruct.js ".ci-out/$dir/decision-evidence.json"
           done
           test ! -f .ci-out/unavailable/decision-evidence.json || node src/reconstruct.js .ci-out/unavailable/decision-evidence.json
-      - name: Release gate on captured reads (permitted): the catalog release is written and read in another process
+      - name: "Release gate on captured reads (permitted): the catalog release is written and read in another process"
         run: |
           set -e
           npm run release:fixture
@@ -65,7 +65,7 @@ jobs:
           AFTER=$(sha256sum .ci-out/releases/catalog-release-1.json)
           test "$BEFORE" = "$AFTER"
           node -e "const o=require('./.ci-out/releases/outcome.json'); if (o.status!=='publication-conflict') { console.error(o); process.exit(1) } console.log('conflict as expected:', o.nextAction)"
-      - name: The fresh-subject policy on the installed package: unchanged subject permitted, changed subject refused, missing subject unknown
+      - name: "The fresh-subject policy on the installed package: unchanged subject permitted, changed subject refused, missing subject unknown"
         run: |
           set -e
           npx revivecheck-catalog prepare --config fixtures/config-fresh-subject.json --out .ci-out/fresh/unchanged --fixture fixtures/fresh-subject-r2.json
@@ -73,7 +73,7 @@ jobs:
           node -e "const o=require('./.ci-out/fresh/changed/outcome.json'); if (o.status!=='refused' || !o.reasons.includes('subject-changed')) { console.error(o); process.exit(1) } console.log('refused:', o.reasons.join(', '))"
           if npx revivecheck-catalog prepare --config fixtures/config-fresh-subject.json --out .ci-out/fresh/missing --fixture fixtures/valid-r2.json; then echo "::error::a missing subject read was permitted"; exit 1; fi
           node -e "const o=require('./.ci-out/fresh/missing/outcome.json'); if (o.status!=='unknown') { console.error(o); process.exit(1) } console.log('unknown, never a pass:', o.reasons.join(', '))"
-      - name: Release gate on the revoked reads (refused): no release file, the outcome names the reviewer's next action
+      - name: "Release gate on the revoked reads (refused): no release file, the outcome names the reviewer's next action"
         run: |
           set -e
           if npx revivecheck-catalog prepare --config config/allowlist.json --out .ci-out/release-revoked --fixture fixtures/revoked-r2.json; then echo "::error::the revoked case was permitted; it must be refused"; exit 1; fi
