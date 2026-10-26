@@ -12,7 +12,10 @@
 // on every render, at the deadline itself, and again inside the release handler. The
 // business action is a versioned token-catalog release built from the eligible entry and
 // its decision evidence (revivecheck/catalog-release); the page keeps the releases it
-// prepared, compares them, and reads any release file back the way a separate process would.
+// prepared, compares them, and reads any release file back the way a separate process
+// would. A loaded release file is kept as a document: its eligibility is derived from the
+// document and the current clock on every render, at its own deadline and when the tab
+// comes back, never from a decision cached at import (repair handoff 2026-10-26, R-06).
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import config from '../config/allowlist.json';
@@ -27,7 +30,8 @@ import { entryDecision, canonicalEntry } from 'revivecheck/entry';
 import { loadConfig, runFixture, runLive, decide } from '../src/evaluate.js';
 import { decisionEvidenceFor } from '../src/decision-evidence.js';
 import { selectorOptions, proceedNow } from '../src/selector.js';
-import { buildCatalogRelease, readCatalogRelease, compareCatalogReleases, selectorFrom } from 'revivecheck/catalog-release';
+import { buildCatalogRelease, readCatalogRelease, compareCatalogReleases } from 'revivecheck/catalog-release';
+import { loadedReleaseView } from '../src/reader.js';
 
 loadConfig(config, 'config/allowlist.json');
 // The catalog releases this browser prepared, newest last: local history of a business output, not proof of hosting or delivery.
@@ -55,7 +59,7 @@ const span = (seconds) => !Number.isFinite(seconds) ? '—' : Math.abs(seconds) 
 const short = (value, keep = 10) => { const text = String(value ?? ''); return text.length > keep * 2 + 1 ? `${text.slice(0, keep)}…${text.slice(-keep)}` : text; };
 const download = (blob, filename) => { const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
 const STATE_TONE = { valid: 'pass', 'recheck-required': 'fail', expired: 'fail', unknown: 'unknown', checking: 'busy', 'not-checked': 'idle' };
-const LIMIT_WORDS = { report: "the report's age limit", observation: 'the network read', registry: 'the registry read', listing: 'the listing read' };
+const LIMIT_WORDS = { report: "the report's age limit", observation: 'the network read', registry: 'the registry read', listing: 'the listing read', subject: 'the subject read' };
 
 function Copy({ value, label = 'Copy' }) {
   const [done, setDone] = useState(false);
@@ -82,7 +86,7 @@ function DecisionBody({ decision: result, entry, report, label }) {
     <dl className="facts">
       <div><dt>Entry</dt><dd>{entry.match ? <>equals the approved report <Identity value={entry.reportHash} keep={8}/></> : entry.approved ? <>differs in <b>{entry.mismatches.map((item) => `${item.field} (configured ${item.configured}, approved ${item.approved})`).join('; ')}</b></> : entry.reason}</dd></div>
       <div><dt>Evaluated</dt><dd>{evaluation ? <>{when(evaluation.evaluatedAt)} · status <b>{CURRENT_WORDS[evaluation.status]}</b> · evaluation <Identity value={evaluation.evaluationHash} keep={8}/></> : 'no evaluation: the bound report was not retrieved'}</dd></div>
-      <div><dt>Checkpoints</dt><dd>registry #{evaluation?.checkpoint.registry?.number ?? '—'} · listing #{evaluation?.checkpoint.listing?.number ?? '—'} · observation #{evaluation?.checkpoint.observation?.number ?? '—'} · report #{report?.binding?.checkpoint?.number ?? '—'}{allowlist.checkpoints.storage ? <> · stored in #{allowlist.checkpoints.storage.blockNumber}</> : null}</dd></div>
+      <div><dt>Checkpoints</dt><dd>registry #{evaluation?.checkpoint.registry?.number ?? '—'} · listing #{evaluation?.checkpoint.listing?.number ?? '—'} · observation #{evaluation?.checkpoint.observation?.number ?? '—'}{evaluation?.checkpoint && 'subject' in evaluation.checkpoint ? <> · subject #{evaluation.checkpoint.subject?.number ?? '—'}</> : null} · report #{report?.binding?.checkpoint?.number ?? '—'}{allowlist.checkpoints.storage ? <> · stored in #{allowlist.checkpoints.storage.blockNumber}</> : null}</dd></div>
       <div><dt>Evidence age</dt><dd>{expiry?.expiresAt ? <>report sealed {when(expiry.completedAt)}; acceptable until <b>{when(expiry.expiresAt)}</b> ({expiry.expired ? 'expired at this evaluation' : `${span(expiry.secondsLeft)} left at this evaluation`}); a fresh registry read does not renew it</> : 'no bound report'}</dd></div>
       <div><dt>Observation</dt><dd>{observation ? `${observation.observed}; the policy accepts at most ${config.policy.evidence.maxObservationAgeSeconds} s` : 'no fresh network observation'}</dd></div>
       <div><dt>Next action</dt><dd>{allowlist.denied[0]?.nextAction ?? evaluation?.nextAction ?? '—'}</dd></div>
@@ -110,14 +114,20 @@ function ReleaseHistory({ releases, now }) {
   })}</ol>;
 }
 
-/** A release file read back the way a separate process reads it: verification, then the selector it fills at the clock of reading. */
-function LoadedRelease({ loaded }) {
-  const { name, read } = loaded;
-  const rows = selectorFrom(read);
+/**
+ * A release file read back the way a separate process reads it: the document is kept, and
+ * its decision is derived from it and the CURRENT clock on every render (`now` is the
+ * page's clock: a timer, the tab's return, and the loaded release's own deadline). The
+ * verification is the document's; the eligibility ages.
+ */
+function LoadedRelease({ loaded, now }) {
+  const { name, release } = loaded;
+  const view = useMemo(() => loadedReleaseView(release, now), [release, now]);
+  const { read, rows } = view;
   return <div className={`replay ${read.ok ? 'pass' : 'fail'}`}>
-    <p className="label recorded">LOADED RELEASE · {name} · version {read.version ?? '?'} · read {when(read.readAt)} · {read.freshness}</p>
-    <p className="verdict small">{read.ok ? 'At least one entry may be used now' : 'Nothing in this file may be used now'}</p>
-    <p className="muted">{read.note}</p>
+    <p className="label recorded">LOADED RELEASE · {name} · version {read.version ?? '?'} · decided at {when(read.readAt)} · {read.freshness}</p>
+    <p className="verdict small">{view.verdict}</p>
+    <p className="muted">{view.clockNote} {release?.validity?.validUntil ? `The release's earliest deadline is ${when(release.validity.validUntil)}${view.nextDeadline ? '' : ' (passed)'}.` : ''}</p>
     <ul className="option-list">{rows.map((row) => <li key={row.id}><span className={`pill ${row.selectable ? 'pass' : 'fail'}`}>{row.selectable ? 'selectable' : 'not selectable'}</span> <b>{row.label}</b><br/><small>{row.reason}</small></li>)}</ul>
     {!read.verification.ok && <p className="error">Verification failed: {read.verification.checks.filter((check) => !check.ok).map((check) => `${check.id} (${check.detail})`).join('; ')}</p>}
   </div>;
@@ -138,7 +148,7 @@ export default function App() {
   const [refused, setRefused] = useState('');
   const [releases, setReleases] = useState(loadReleases);
   const [releaseNotice, setReleaseNotice] = useState('');
-  const [loaded, setLoaded] = useState(null);   // a release file read back: { name, release, read }
+  const [loaded, setLoaded] = useState(null);   // a release file read back: { name, release }; its decision is derived at render from the clock
   const [loadError, setLoadError] = useState('');
   useEffect(() => { setDecision((current) => changeSelection(current, selection)); setRefused(''); }, [selection]);
   // The clock the page renders with: every fifteen seconds, when the tab comes back, and at the deadline itself.
@@ -155,6 +165,14 @@ export default function App() {
     const timer = setTimeout(() => { const at = new Date(); setNow(at); setDecision((current) => ageDecision(current, { now: at })); }, Math.min(Math.max(0, until - Date.now() + 1), 2_147_483_647));
     return () => clearTimeout(timer);
   }, [lapsesAt]);
+  // The loaded release's own earliest deadline wakes the page too, so its reader ages at the deadline itself and not only at the next timer tick.
+  const loadedDeadline = loaded ? loadedReleaseView(loaded.release, now).nextDeadline : null;
+  useEffect(() => {
+    const until = Date.parse(loadedDeadline);
+    if (!Number.isFinite(until)) return undefined;
+    const timer = setTimeout(() => setNow(new Date()), Math.min(Math.max(0, until - Date.now() + 1), 2_147_483_647));
+    return () => clearTimeout(timer);
+  }, [loadedDeadline]);
   useEffect(() => {
     if (decision.state !== 'checking') { setElapsed(0); return undefined; }
     const started = Date.parse(decision.startedAt);
@@ -230,15 +248,16 @@ export default function App() {
       setReleaseNotice(`Release ${release.version} prepared at ${when(at)}: ${release.entries.length} entry, hash ${release.releaseHash.slice(0, 16)}…, permission until ${when(release.validity.validUntil)}${previous ? `, after release ${previous.version}` : ''}. Saved in this browser and downloaded.`);
     } catch (error) { setReleaseNotice(`No release was prepared: ${error.message}`); }
   }
-  /** Read a release file as a separate reader would: verify it from the document alone and apply each entry's deadline now. */
+  /** Load a release file: the document is kept; the reader decides from it and the clock on every render. An unreadable file replaces any earlier presentation with the error. */
   async function loadRelease(event) {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
       const release = JSON.parse(await file.text());
-      const read = readCatalogRelease(release, { now: new Date() });
-      setLoaded({ name: file.name, release, read });
+      if (!release || typeof release !== 'object') throw new Error('not a JSON document');
+      setLoaded({ name: file.name, release });
       setLoadError('');
+      setNow(new Date());
     } catch (error) { setLoaded(null); setLoadError(`The file could not be read as a catalog release: ${error.message}`); }
     event.target.value = '';
   }
@@ -313,7 +332,7 @@ export default function App() {
           {releases.length ? <ReleaseHistory releases={releases} now={now}/> : <p className="muted">No release prepared in this browser yet. Check the token, correct the entry, and prepare one.</p>}
           <div className="actions"><label className="button">Load a release file<input type="file" accept="application/json,.json" onChange={loadRelease} hidden/></label>{releases.length > 0 && <button type="button" onClick={() => { if (confirm('Forget the releases kept in this browser? Downloaded files are unaffected.')) { saveReleases([]); setReleases([]); } }}>Forget local history</button>}</div>
           {loadError && <p className="error" role="alert">{loadError}</p>}
-          {loaded && <LoadedRelease loaded={loaded}/>}
+          {loaded && <LoadedRelease loaded={loaded} now={now}/>}
         </section>
 
         <section className="block" aria-labelledby="recorded-title">
@@ -336,7 +355,7 @@ export default function App() {
             <div><dt>Name</dt><dd>{config.policy.name}</dd></div>
             <div><dt>Policy hash</dt><dd><Identity value={decision.current?.extra?.result?.policyHash ?? recordedRun.policyHash} keep={10}/></dd></div>
             <div><dt>Network</dt><dd>{config.policy.network.key} · chain {config.policy.network.chainId} · runtime {config.policy.runtime.specName}/{config.policy.runtime.specVersions.join(', ')}</dd></div>
-            <div><dt>Evidence</dt><dd>report at most {span(config.policy.evidence.maxAgeSeconds)} old · reads at most {config.policy.evidence.maxObservationAgeSeconds} s old · both interfaces must agree · the report must be stored on-chain</dd></div>
+            <div><dt>Evidence</dt><dd>report at most {span(config.policy.evidence.maxAgeSeconds)} old · reads at most {config.policy.evidence.maxObservationAgeSeconds} s old · both interfaces must agree · the report must be stored on-chain · {config.policy.evidence.requireFreshSubject === true ? 'the subject\'s symbol, name, decimals and address are read again on every evaluation and compared with the approved report' : 'the subject metadata is the approved report\'s (no fresh read of it is required by this policy)'}</dd></div>
             <div><dt>Trusted reviewer</dt><dd>{config.policy.reviewers.trusted.map((address) => <Identity key={address} value={address} keep={10}/>)}<br/><small>{config.policy.reviewers.basis}</small></dd></div>
             <div><dt>Consumer contract</dt><dd>VerifiedTokenList v{config.policy.consumer.version} <Identity value={config.policy.consumer.address} keep={10}/></dd></div>
           </dl>

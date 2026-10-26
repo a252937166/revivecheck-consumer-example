@@ -4,18 +4,38 @@
 // replays captured reads through the same code path. Nothing here signs anything; every
 // read is public. The `service` module is passed in, so a browser can hand over the
 // bundle it loaded on demand and Node the module it imported.
+//
+// The configuration boundary guards the installed implementation: a policy requirement
+// this configuration requests (`evidence.requireFreshSubject`, or any later option set to
+// true) that the installed `normalizePolicy` does not retain makes the configuration
+// unusable here, and the error names it. An older package that silently dropped the
+// option would otherwise evaluate a weaker policy under the old fingerprint. A legacy
+// configuration without such options passes unchanged.
 import { createBinding, evaluateBinding, normalizePolicy, policyHash } from 'revivecheck/policy';
 import { buildAllowlist, CONFIG_SCHEMA } from './allowlist.js';
 
 export const FIXTURE_SCHEMA = 'revivecheck-consumer.fixture.v1';
 export const INPUTS_SCHEMA = 'revivecheck-consumer.inputs.v1';
+/** The reads every policy needs; `readsFor` adds the subject read when the policy requires a fresh one. */
 export const READS = Object.freeze(['observation', 'registry', 'listing', 'evidence']);
+export const readsFor = (policy) => normalizePolicy(policy).evidence.requireFreshSubject === true ? [...READS, 'subject'] : [...READS];
 const elapsed = (start) => Date.now() - start;
 
-/** Validate the configuration document; throws with the field named. */
-export function loadConfig(config, name = 'config') {
+/**
+ * The capability guard, implemented here (not only in the library) so that it holds
+ * against whatever `normalize` is installed: every `evidence.*` requirement requested as
+ * `true` must come back `true` from the normalizer, or the configuration is refused.
+ */
+export function assertRequirementsRetained(requested, normalized) {
+  const dropped = Object.entries(requested?.evidence ?? {}).filter(([, value]) => value === true).map(([key]) => key).filter((key) => normalized?.evidence?.[key] !== true);
+  if (dropped.length) throw new Error(`The installed revivecheck package does not retain the requested policy requirement${dropped.length === 1 ? '' : 's'} ${dropped.map((key) => `evidence.${key}`).join(', ')}; this consumer refuses the configuration instead of evaluating a weaker policy.`);
+  return normalized;
+}
+
+/** Validate the configuration document; throws with the field named. `normalize` is the installed normalizer by default and injectable for the guard's tests. */
+export function loadConfig(config, name = 'config', { normalize = normalizePolicy } = {}) {
   if (config?.schema !== CONFIG_SCHEMA) throw new Error(`${name} declares schema ${CONFIG_SCHEMA}.`);
-  normalizePolicy(config.policy);
+  assertRequirementsRetained(config.policy, normalize(config.policy));
   for (const key of ['label', 'owner', 'releaseId', 'revision', 'reportHash', 'storage']) if (config.release?.[key] === undefined) throw new Error(`${name}: release.${key} is required.`);
   if (!config.entry || !config.boundBy) throw new Error(`${name}: entry and boundBy are required.`);
   return config;
@@ -72,7 +92,8 @@ export async function runLive(config, { service, now: nowOverride, retries = 3, 
         const collected = Date.now();
         inputs = await service.collectPolicyInputs({ policy: config.policy, binding });
         record.collectPolicyInputsMs = elapsed(collected);
-        const failed = READS.filter((key) => inputs[key]?.error).map((key) => `${key}: ${inputs[key].error}`);
+        // Every read the policy requires counts as a failed read when it errs, the subject read included: a retry re-reads, it never drops the requirement.
+        const failed = readsFor(config.policy).filter((key) => inputs[key]?.error).map((key) => `${key}: ${inputs[key].error}`);
         record.ok = failed.length === 0; record.failedReads = failed; record.ms = elapsed(started);
         attempts.push(record);
         if (failed.length) {
@@ -105,7 +126,8 @@ export function decide(config, run, { entry = config.entry } = {}) {
   const inputsRecord = {
     schema: INPUTS_SCHEMA, source: run.source, collectedAt: run.inputs?.collectedAt ?? run.now.toISOString(), now: run.now.toISOString(), policyHash: hash,
     attempts: run.attempts, retrieval: run.retrieval, binding: run.binding, fixture: run.fixture,
-    inputs: run.inputs ? { observation: run.inputs.observation, registry: run.inputs.registry, listing: run.inputs.listing, evidence: run.inputs.evidence } : null,
+    // The subject read travels with the record when the policy required it: it bounds the permission deadline and is needed to reconstruct the decision.
+    inputs: run.inputs ? { observation: run.inputs.observation, registry: run.inputs.registry, listing: run.inputs.listing, evidence: run.inputs.evidence, ...(run.inputs.subject !== undefined ? { subject: run.inputs.subject } : {}) } : null,
   };
   const allowed = allowlist.allow.length === 1 && allowlist.denied.length === 0;
   return { policyHash: hash, evaluation, allowlist, inputsRecord, allowed, entry };

@@ -1,10 +1,16 @@
 # ReviveCheck package artifacts vendored by this repository. Verify with
 #   (cd vendor && shasum -a 256 -c CHECKSUMS.txt)          macOS
 #   cd vendor && grep -v '^#' CHECKSUMS.txt | sha256sum -c -   GNU coreutils
-# revivecheck-0.5.0.tgz: the dependency in package.json, produced with `npm pack` inside
-# the ReviveCheck checkout at commit e105dfe (2026-10-25, clean tree); adds
-# revivecheck/catalog-release (the versioned catalog release, the reader and the
-# release gate command revivecheck-catalog) and the release gate starter.
+# revivecheck-0.5.3.tgz: the dependency in package.json, produced with `npm pack` inside
+# the ReviveCheck checkout at commit b5ea9b4 (2026-10-26): the repairs of the 2026-10-26
+# handoff (the configuration boundary guard, the fresh-subject policy retained with its own
+# fingerprint, immutable catalog releases with exit code 4 and per-run records, evidence
+# health from verified reads) and their follow-up (the release line a predecessor must
+# belong to, renewal gates for unread decisions, unidentified listings and unplaced
+# observations). The 0.5.2 artifact of the same day (commit 9f68e07, SHA-256
+# 86608c21093e4857f9d5bbacd615fc821f9d39f63ceb3248dd654fd8caf68dcb) was installed here
+# only in the working tree and superseded before any commit. revivecheck-0.5.0.tgz (commit e105dfe; the
+# catalog release, the reader and the release gate command) and
 # revivecheck-0.4.1.tgz (commit 2e1673d; the evidence-derived permission deadline) and
 # revivecheck-0.4.0.tgz (commit 6b7402f) are the previous artifacts, kept as history; the earlier 0.3.0 artifact, SHA-256
 # 472a85e3dacb742d200e2f2b20ef0bac0dba016309c21c5bfe38b7cd99c1f98c from commit
@@ -12,3 +18,4 @@
 aa48acddc3c7d779cfc2849c7c5331c09802db24d50f6b28ddc0702ea87fcf35  revivecheck-0.4.0.tgz
 5a0003ae4d4603141210df8d2638dc2f31f2a91019c9e6e4c2078555a33a868b  revivecheck-0.4.1.tgz
 d818494389e86ffad0d8005f0c6ca5a1d15babcd169f6b002938e979e5f594ef  revivecheck-0.5.0.tgz
+2ac5f3bd55a28506904df3bc1af16f455c5f12ea943c79bfdeca9526bb48d89b  revivecheck-0.5.3.tgz

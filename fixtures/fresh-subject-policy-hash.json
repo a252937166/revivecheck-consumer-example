@@ -1,0 +1,7 @@
+{
+  "note": "The fingerprint the corrected ReviveCheck source (lib/policy.js at commit 9f68e07, 2026-10-26) computes for fixtures/config-fresh-subject.json: the consumer policy with evidence.requireFreshSubject set to true and nothing else changed. The consumer test holds the installed package to it without importing the source tree.",
+  "policyName": "Example DEX allow-list policy (pUSD, Portaldot V3 testnet, consumer v2)",
+  "legacyPolicyHash": "795942d67b86c2c9b35c07fe3e24f2d8796dbd01ea79806b35cf125aaf44f8c3",
+  "policyHash": "a1ac30e21e7c7792b3e62f0400401383d40c0b338ac88368760e3c90ac6f8e7d",
+  "recordedAt": "2026-10-26T07:08:45.317Z"
+}

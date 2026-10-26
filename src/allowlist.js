@@ -127,6 +127,7 @@ export function buildAllowlist({ config, policyHash, binding, evaluation, report
       registry: evaluation?.checkpoint?.registry ?? null,
       observation: evaluation?.checkpoint?.observation ?? null,
       listing: evaluation?.checkpoint?.listing ?? null,
+      ...(evaluation?.checkpoint && 'subject' in evaluation.checkpoint ? { subject: evaluation.checkpoint.subject ?? null } : {}),
       storage: retrieval && retrieval.verified ? { blockNumber: retrieval.blockNumber ?? null, blockHash: retrieval.blockHash ?? null, extrinsicHash: retrieval.extrinsicHash ?? null, extrinsicIndex: retrieval.extrinsicIndex ?? null } : null,
       report: approved.checkpoint ?? report?.binding?.checkpoint ?? null,
     },

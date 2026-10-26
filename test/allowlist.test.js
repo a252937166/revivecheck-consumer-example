@@ -29,21 +29,28 @@ function check(...args) {
 }
 const codes = (run) => run.allowlist.denied[0]?.reasons ?? [];
 
-test('the vendored tarball matches CHECKSUMS.txt and the documented exports resolve from it', async () => {
-  const line = readFileSync(path.join(root, 'vendor/CHECKSUMS.txt'), 'utf8').split('\n').find((text) => /^[a-f0-9]{64}\s+revivecheck-0\.5\.0\.tgz$/.test(text));
+test('the vendored tarball matches CHECKSUMS.txt, package.json names it, and the documented exports resolve from the installed copy', async () => {
+  const dependency = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8')).dependencies.revivecheck;
+  assert.equal(dependency, 'file:vendor/revivecheck-0.5.3.tgz', 'the active dependency is the corrected artifact');
+  const line = readFileSync(path.join(root, 'vendor/CHECKSUMS.txt'), 'utf8').split('\n').find((text) => /^[a-f0-9]{64}\s+revivecheck-0\.5\.3\.tgz$/.test(text));
   assert.ok(line, 'CHECKSUMS.txt names the tarball');
-  const actual = createHash('sha256').update(readFileSync(path.join(root, 'vendor/revivecheck-0.5.0.tgz'))).digest('hex');
+  const actual = createHash('sha256').update(readFileSync(path.join(root, 'vendor/revivecheck-0.5.3.tgz'))).digest('hex');
   assert.equal(actual, line.split(/\s+/)[0]);
   const pkg = (await import('revivecheck/package.json', { with: { type: 'json' } })).default;
-  assert.equal(pkg.version, '0.5.0');
-  for (const [specifier, names] of [['revivecheck/catalog-release', ['buildCatalogRelease', 'verifyCatalogRelease', 'readCatalogRelease', 'compareCatalogReleases', 'releaseDiagnostics', 'gateOutcome', 'loadConsumerConfig', 'selectorFrom']], ['revivecheck/entry', ['approvedEntry', 'compareEntry', 'entryDecision']], ['revivecheck/current', ['initialDecision', 'beginCheck', 'settleCheck', 'failCheck', 'canAct', 'checkPermission', 'decisionValidity']], ['revivecheck/decision', ['buildDecisionEvidence', 'reconstructDecision', 'decisionSheetHtml', 'explainReason', 'RENEWAL_STEPS']]]) {
+  assert.equal(pkg.version, '0.5.3', 'the installed module is the corrected artifact, not only the manifest text');
+  const installed = JSON.parse(readFileSync(path.join(root, 'node_modules/revivecheck/package.json'), 'utf8'));
+  assert.equal(installed.version, '0.5.3');
+  const { normalizePolicy: installedNormalize } = await import('revivecheck/policy');
+  assert.equal(installedNormalize({ ...config.policy, evidence: { ...config.policy.evidence, requireFreshSubject: true } }).evidence.requireFreshSubject, true, 'the installed bytes retain the fresh-subject option');
+  for (const [specifier, names] of [['revivecheck/catalog-release', ['buildCatalogRelease', 'verifyCatalogRelease', 'readCatalogRelease', 'compareCatalogReleases', 'releaseDiagnostics', 'gateOutcome', 'publicationOutcome', 'loadConsumerConfig', 'selectorFrom']], ['revivecheck/health', ['evidenceHealth', 'renewalPlan', 'screenSuccessor', 'successorReports']], ['revivecheck/entry', ['approvedEntry', 'compareEntry', 'entryDecision']], ['revivecheck/current', ['initialDecision', 'beginCheck', 'settleCheck', 'failCheck', 'canAct', 'checkPermission', 'decisionValidity']], ['revivecheck/decision', ['buildDecisionEvidence', 'reconstructDecision', 'decisionSheetHtml', 'explainReason', 'RENEWAL_STEPS']]]) {
     const module = await import(specifier);
     for (const name of names) assert.equal(typeof module[name] === 'function' || typeof module[name] === 'object', true, `${specifier}.${name}`);
   }
   const policy = await import('revivecheck/policy');
   const service = await import('revivecheck/service');
   const report = await import('revivecheck/report');
-  for (const name of ['normalizePolicy', 'policyHash', 'createBinding', 'verifyBinding', 'evaluateBinding', 'summarizeEvaluation']) assert.equal(typeof policy[name], 'function', `policy.${name}`);
+  for (const name of ['normalizePolicy', 'policyHash', 'createBinding', 'verifyBinding', 'evaluateBinding', 'summarizeEvaluation', 'assertRequirementsRetained']) assert.equal(typeof policy[name], 'function', `policy.${name}`);
+  assert.equal(typeof policy.evidencePredicates, 'object');
   assert.equal(typeof policy.REASONS, 'object');
   for (const name of ['collectPolicyInputs', 'evaluatePolicy', 'retrieveEvidence', 'readRegistry', 'readTokenList', 'networkStatus', 'closeConnections']) assert.equal(typeof service[name], 'function', `service.${name}`);
   for (const name of ['verifyRun', 'validateImportedRun', 'fingerprint', 'canonical']) assert.equal(typeof report[name], 'function', `report.${name}`);

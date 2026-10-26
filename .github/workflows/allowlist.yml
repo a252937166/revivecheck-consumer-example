@@ -54,9 +54,25 @@ jobs:
         run: |
           set -e
           npm run release:fixture
-          NOW=$(node -e "console.log(require('./out/releases/catalog-release-1.json').generatedAt)")
-          npm run release:read -- out/releases/catalog-release-1.json --now "$NOW"
-          node -e "const o=require('./out/releases/outcome.json'); if (o.status!=='permitted') process.exit(1); console.log('permitted: release', o.release.version, o.release.releaseHash)"
+          NOW=$(node -e "console.log(require('./.ci-out/releases/catalog-release-1.json').generatedAt)")
+          npm run release:read -- .ci-out/releases/catalog-release-1.json --now "$NOW"
+          node -e "const o=require('./.ci-out/releases/outcome.json'); if (o.status!=='permitted' || o.publication.status!=='published') process.exit(1); console.log('permitted: release', o.release.version, o.release.releaseHash, 'run', o.runId)"
+      - name: A repeated preparation never replaces the release (exit 4, bytes unchanged)
+        run: |
+          set -e
+          BEFORE=$(sha256sum .ci-out/releases/catalog-release-1.json)
+          if npm run release:fixture; then echo "::error::the repeat was permitted; it must conflict"; exit 1; fi
+          AFTER=$(sha256sum .ci-out/releases/catalog-release-1.json)
+          test "$BEFORE" = "$AFTER"
+          node -e "const o=require('./.ci-out/releases/outcome.json'); if (o.status!=='publication-conflict') { console.error(o); process.exit(1) } console.log('conflict as expected:', o.nextAction)"
+      - name: The fresh-subject policy on the installed package: unchanged subject permitted, changed subject refused, missing subject unknown
+        run: |
+          set -e
+          npx revivecheck-catalog prepare --config fixtures/config-fresh-subject.json --out .ci-out/fresh/unchanged --fixture fixtures/fresh-subject-r2.json
+          if npx revivecheck-catalog prepare --config fixtures/config-fresh-subject.json --out .ci-out/fresh/changed --fixture fixtures/fresh-subject-changed-r2.json; then echo "::error::a changed subject was permitted"; exit 1; fi
+          node -e "const o=require('./.ci-out/fresh/changed/outcome.json'); if (o.status!=='refused' || !o.reasons.includes('subject-changed')) { console.error(o); process.exit(1) } console.log('refused:', o.reasons.join(', '))"
+          if npx revivecheck-catalog prepare --config fixtures/config-fresh-subject.json --out .ci-out/fresh/missing --fixture fixtures/valid-r2.json; then echo "::error::a missing subject read was permitted"; exit 1; fi
+          node -e "const o=require('./.ci-out/fresh/missing/outcome.json'); if (o.status!=='unknown') { console.error(o); process.exit(1) } console.log('unknown, never a pass:', o.reasons.join(', '))"
       - name: Release gate on the revoked reads (refused): no release file, the outcome names the reviewer's next action
         run: |
           set -e
@@ -70,9 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fixture-outputs
-          path: |
-            .ci-out
-            out/releases
+          path: .ci-out
 
   live:
     name: Live check (manual; needs the public testnet nodes)

@@ -10,7 +10,7 @@
 import { checkPermission } from 'revivecheck/current';
 
 export const NATIVE_OPTION = Object.freeze({ id: 'native', label: 'tPOT (native, not subject to this policy)', selectable: true, reason: 'The native token is not an allow-listed entry; it is here so the control has one option that never depends on the policy.' });
-const LIMIT_WORDS = { report: "the report's age limit", observation: 'the network read', registry: 'the registry read', listing: 'the listing read' };
+const LIMIT_WORDS = { report: "the report's age limit", observation: 'the network read', registry: 'the registry read', listing: 'the listing read', subject: 'the subject read' };
 
 /** The options the selector offers at `now`, derived from the current decision's allow-list output. */
 export function selectorOptions(decision, { subject, now = new Date() }) {
