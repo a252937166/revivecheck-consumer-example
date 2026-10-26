@@ -78,4 +78,16 @@ shasum -a 256 "revivecheck-demo-$RELEASE.tar.gz"
 
 ## Log
 
-No deployment has been performed yet. The first entry records the release ID, the commit, the payload hash, the index hash, the verification output and the clean-browser journey.
+| | |
+| --- | --- |
+| Release | `20261026-52ca088-demo-r1`, placement A, served from `/var/www/revivecheck-demo/current` → `releases/20261026-52ca088-demo-r1` on the server that hosts the App; vhost `/etc/nginx/conf.d/revivecheck-demo.conf` (SHA-256 `c86c3cc8…42058`, prepared with the host name's certificate on 2026-10-26 before this deployment; unchanged by it, no reload) |
+| Source | commit `52ca088` (clean working tree), `WEB_BASE=/ npm run web:build`, built 2026-10-26T11:16:43Z |
+| Payload | `revivecheck-demo-20261026-52ca088-demo-r1.tar.gz`, SHA-256 `8e97a4e085dd625829a2006c91b8e9a70757e806feea2baca657705816917996`, packed without macOS metadata; 4 files plus `hosting.json` (`revivecheck-consumer.hosting-manifest.v1`) inside |
+| Index SHA-256 | `5afcc667537a7e2658269d86deb0251507593f1485ab5f3e3ddeffbb4791b4f2` |
+| Activated | 2026-10-26T11:18:55Z by creating the `current` symlink atomically (no earlier release; the pending guard disappeared) |
+| Verification | on the server every file matched its hash and no `._*` file was extracted; from outside, `scripts/verify-hosting.mjs --site https://demo.revivecheck.axiqo.xyz/ --commit 52ca0880…` reported every check ok (manifest served as `application/json`, commit and release as built, `index.html` hash as listed); all 4 files fetched over HTTPS matched; `/api/anything` and `/.git/config` 404; HTTP redirects to HTTPS (301) |
+| Clean-browser journey | `node test/browser/release-journey.mjs --site https://demo.revivecheck.axiqo.xyz/` at 11:21:57Z: 11 of 11 (the wrong entry withheld with `entry-mismatch:decimals`, the corrected entry available with a stated deadline, release 1 `2a173b58…` prepared at 11:23:16Z on evaluation `a4135980…` at block 202,605, verified in Node, read by `revivecheck-catalog read` in another process, loaded back into the reader; no console errors) |
+| Receipts | `deployment-20261026-52ca088-demo-r1.json`, `hosting-20261026-52ca088-demo-r1.json`, `hosting-verification-20261026-52ca088-demo-r1.json`, `sha256-20261026-52ca088-demo-r1.txt` and the payload under `/var/www/revivecheck-demo/ops/` |
+| Mirror | the Pages workflow built the same commit at <https://a252937166.github.io/revivecheck-consumer-example/> |
+
+Rollback: there is no earlier release; removing the `current` symlink restores the server's pending guard. Later releases are switched to by the same symlink replacement and every release directory is retained.

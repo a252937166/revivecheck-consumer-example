@@ -160,3 +160,16 @@ Who: the same AI agent on the author's machine, for upstream's `docs/2026-10-26_
 Observation for upstream: a `file:` tarball's lockfile integrity is still not re-verified by `npm ci`, so the `shasum -c` step over `vendor/CHECKSUMS.txt` remains the control that matters (first noted 2026-10-25). Upstream's release gate now refuses a `--previous` from another release line; `npm run release` continues the recorded line from `out/releases/catalog-release-1.json` as before.
 
 Still not shown: an external builder, adoption, independent review, or a public URL.
+
+## Addendum, 2026-10-26T11:25Z: published
+
+Who: the same AI agent on the author's machine, on the author's instruction to publish.
+
+| Time (UTC) | Step | Result |
+| --- | --- | --- |
+| 11:16 | The repository created public at <https://github.com/a252937166/revivecheck-consumer-example> and `main` (commit `52ca088`) pushed; the optional Pages mirror enabled for the workflow | the `pages` workflow built the commit and published <https://a252937166.github.io/revivecheck-consumer-example/>; the `allowlist` workflow did not start: its file was invalid YAML (three step names containing a colon), fixed in the next commit |
+| 11:16 to 11:19 | `WEB_BASE=/ npm run web:build`, `hosting.json`, payload `8e97a4e0…7996`, uploaded and verified on the server, `current` created | <https://demo.revivecheck.axiqo.xyz/> serves release `20261026-52ca088-demo-r1`; receipt in `docs/DEPLOYMENT.md` |
+| 11:19 to 11:23 | Verified from outside (`verify-hosting.mjs`, every file over HTTPS) and the release journey in a clean browser against the public URL | every check ok; 11 of 11 |
+| 11:23 | The first hosted `allowlist` run failed at the repeat-conflict step: a repeat of `release:fixture` with the same fixture is reused (identical bytes, exit 0), because the fixture fixes the clock, so the step's expectation of a conflict was wrong; the step now expects the identical repeat to be `reused` and a repeat at another clock (`--now`) to conflict with exit 4, both leaving the bytes unchanged | see the workflow run after the fix |
+
+Now shown: a public URL and a public repository. Still not shown: an external builder, adoption, or independent review.
